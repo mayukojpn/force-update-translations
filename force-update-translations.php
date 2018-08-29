@@ -116,7 +116,7 @@ class Force_Update_Translations {
 	 * @return $path            File path to get source.
 	 */
 	function get_source_path( $project, $locale, $format = 'mo', $type = 'dev' ) {
-		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/%3$s/default/export-translations?filters[status]=all',
+		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/%3$s/default/export-translations?filters[status]=current_or_waiting_or_fuzzy',
 			$project,
 			$type,
 			$locale
