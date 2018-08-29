@@ -1,5 +1,5 @@
-=== Force update translations ===
-Contributors: mayukojpn
+=== Force Update Translations ===
+Contributors: mayukojpn, nao
 Tags: translation
 Requires at least: 4.9
 Tested up to: 4.9
@@ -17,3 +17,9 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 == Screenshots ==
 
 1. "Update translation" link will be appeard in your plugin list.
+
+== Changelog ==
+
+= 0.2 =
+* Export only Current/Waiting/Fuzzy translations. props @nao
+* Capitalize plugin name.

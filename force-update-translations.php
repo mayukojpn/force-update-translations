@@ -1,9 +1,9 @@
 <?php
 /*
-Plugin Name: Force update translations
+Plugin Name: Force Update Translations
 Description: Download WordPress theme/plugin translations and apply them to your site manually even their language pack haven't been released or reviewed on translate.wordpress.org
 Author:      Mayo Moriyama
-Version:     0.1
+Version:     0.2
 */
 
 class Force_Update_Translations {
