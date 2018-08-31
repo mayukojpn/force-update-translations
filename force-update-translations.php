@@ -31,7 +31,7 @@ class Force_Update_Translations {
 		$new_acctions = array (
 			'force_translate' => sprintf(
 				'<a href="%1$s">%2$s</a>',
-				$url,
+				esc_url( $url ),
 				esc_html__( 'Update translation', 'force-update-translations' )
 			)
 		);
@@ -69,7 +69,7 @@ class Force_Update_Translations {
 					'status'  => 'success',
 					'content' => sprintf(
 						__( 'Translation files have been exported: %s', 'force-update-translations' ),
-						'<b>' . $plugin_data['Title'] . '</b>' )
+						'<b>' . esc_html( $plugin_data['Title'] ) . '</b>' )
 				);
 			}
 			self::admin_notices();
@@ -122,6 +122,7 @@ class Force_Update_Translations {
 			$locale
 		);
 		$path = ( $format == 'po' ) ? $path : $path . '&format=' . $format;
+		$path = esc_url_raw( $path );
 		return $path;
 	}
 
@@ -135,8 +136,8 @@ class Force_Update_Translations {
 		}
 		foreach ( $this->admin_notices as $notice ) {
 			?>
-			<div class="notice notice-<?php echo $notice['status']; ?>">
-					<p><?php echo $notice['content']; ?></p>
+			<div class="notice notice-<?php echo esc_attr( $notice['status'] ); ?>">
+					<p><?php echo esc_html( $notice['content'] ); ?></p>
 			</div>
 			<?php
 		}
