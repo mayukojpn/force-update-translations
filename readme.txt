@@ -1,5 +1,5 @@
 === Force Update Translations ===
-Contributors: mayukojpn, nao
+Contributors: mayukojpn, nao, dartui
 Tags: translation
 Requires at least: 4.9
 Tested up to: 4.9
@@ -19,6 +19,10 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 1. "Update translation" link will be appeard in your plugin list.
 
 == Changelog ==
+
+= 0.2.1 =
+* Make target locale switchable by user setting. Thanks for reporting @dartui
+* Improve escaping. Thanks for reporting @miyauchi
 
 = 0.2 =
 * Export only Current/Waiting/Fuzzy translations. props @nao
