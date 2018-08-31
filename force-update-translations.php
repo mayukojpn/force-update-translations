@@ -15,6 +15,8 @@ class Force_Update_Translations {
    */
   function __construct() {
 
+		include 'lib/glotpress/locales.php';
+
 		add_action( 'plugin_action_links',        array( $this, 'plugin_action_links'        ), 10, 2 );
 		add_action( 'pre_current_active_plugins', array( $this, 'pre_current_active_plugins' ) );
 
@@ -120,10 +122,11 @@ class Force_Update_Translations {
 	 * @return $path            File path to get source.
 	 */
 	function get_source_path( $project, $locale, $format = 'mo', $type = 'dev' ) {
+		$locale = GP_Locales::by_field( 'wp_locale', $locale );
 		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/%3$s/default/export-translations?filters[status]=current_or_waiting_or_fuzzy',
 			$project,
 			$type,
-			$locale
+			$locale->slug
 		);
 		$path = ( $format == 'po' ) ? $path : $path . '&format=' . $format;
 		$path = esc_url_raw( $path );
