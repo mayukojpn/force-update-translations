@@ -141,7 +141,7 @@ class Force_Update_Translations {
 		foreach ( $this->admin_notices as $notice ) {
 			?>
 			<div class="notice notice-<?php echo esc_attr( $notice['status'] ); ?>">
-					<p><?php echo esc_html( $notice['content'] ); ?></p>
+					<p><?php echo $notice['content']; // WPCS: XSS OK. ?></p>
 			</div>
 			<?php
 		}
