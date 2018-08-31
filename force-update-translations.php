@@ -54,7 +54,7 @@ class Force_Update_Translations {
 			$types       = array( 'po', 'mo' );
 
 			foreach ( $types as $type ){
-				$import = $this->import( 'wp-plugins/'. $plugin_slug , 'ja', $type );
+				$import = $this->import( 'wp-plugins/'. $plugin_slug , get_user_locale(), $type );
 				if( is_wp_error( $import ) ) {
 					$this->admin_notices[] = array(
 						'status'  => 'error',
@@ -84,7 +84,11 @@ class Force_Update_Translations {
 	 * @param string $format    File format
 	 * @return null|WP_Error    File path to get source.
 	 */
-	function import( $project_slug, $locale = 'ja', $format = 'mo' ) {
+	function import( $project_slug, $locale = '', $format = 'mo' ) {
+
+		if ( empty( $locale ) ) {
+			$locale = get_user_locale();
+		}
 
 		preg_match("/wp-(.*)/", $project_slug, $project_path);
 
