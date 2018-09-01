@@ -102,9 +102,12 @@ class Force_Update_Translations {
 			$format
 		);
 		$response = wp_remote_get( $source );
-		if ( !is_array( $response ) ) {
+
+		if ( !is_array( $response )
+			|| $response['headers']['content-type'] !== 'application/octet-stream' ) {
 			return new WP_Error( 'fdt-source-not-found', sprintf(
-				__( 'Cannot get source file: %s', 'force-update-translations' ), $target
+				__( 'Cannot get source file: %s', 'force-update-translations' ),
+				'<b>' . esc_html( $source ) . '</b>'
 			) );
 		}
 		else {
