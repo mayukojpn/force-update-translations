@@ -50,11 +50,22 @@ class Force_Update_Translations {
 		}
 		else {
 			$plugin_file = $_GET['force_translate'];
-			$plugin_slug = substr($plugin_file, 0, strpos($plugin_file, '/') );
+			if ( !preg_match("/^([a-zA-Z0-9-_]+)\/([a-zA-Z0-9-_.]+.php)$/", $plugin_file, $plugin_slug) ){
+				$this->admin_notices[] = array(
+					'status'  => 'error',
+					'content' => sprintf(
+						/* Translators: %s: parameter */
+						esc_html__( 'Invalid parameter: %s', 'force-update-translations' ),
+						esc_html( $plugin_file )
+					)
+				);
+				self::admin_notices();
+				return;
+			}
 			$types       = array( 'po', 'mo' );
 
 			foreach ( $types as $type ){
-				$import = $this->import( 'wp-plugins/'. $plugin_slug , get_user_locale(), $type );
+				$import = $this->import( 'wp-plugins/'. $plugin_slug[1], get_user_locale(), $type );
 				if( is_wp_error( $import ) ) {
 					$this->admin_notices[] = array(
 						'status'  => 'error',
