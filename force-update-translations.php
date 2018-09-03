@@ -85,7 +85,6 @@ class Force_Update_Translations {
 		self::admin_notices();
 
 	}
-	}
 	/**
 	 * Import translation file.
 	 *
