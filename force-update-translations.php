@@ -29,15 +29,23 @@ class Force_Update_Translations {
 	 * @return array $actions    File path to get source.
 	 */
 	function plugin_action_links( $actions, $plugin_file ) {
-		$url          = admin_url( 'plugins.php?force_translate=' . $plugin_file );
-		$new_acctions = array (
+		$url         = admin_url( 'plugins.php?force_translate=' . $plugin_file );
+		$new_actions = array (
 			'force_translate' => sprintf(
 				'<a href="%1$s">%2$s</a>',
 				esc_url( $url ),
 				esc_html__( 'Update translation', 'force-update-translations' )
 			)
 		);
-		$actions  = array_merge( $actions, $new_acctions );
+		// Check if plugin is on wordpress.org by checking if ID (from Plugin wp.org info) exists in 'response' or 'no_update'
+		$on_wporg = false;
+		$plugin_state = get_site_transient( 'update_plugins' );
+		if ( isset( $plugin_state->response[ $plugin_file ]->id ) || isset( $plugin_state->no_update[ $plugin_file ]->id ) ) {
+			$on_wporg = true;
+		};
+		if ( $on_wporg ) {
+			$actions  = array_merge( $actions, $new_actions );
+		};
 		return $actions;
 
 	}
