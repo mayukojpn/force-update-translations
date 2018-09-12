@@ -17,8 +17,9 @@ class Force_Update_Translations {
 
 		include 'lib/glotpress/locales.php';
 
-		add_action( 'plugin_action_links',        array( $this, 'plugin_action_links'        ), 10, 2 );
-		add_action( 'pre_current_active_plugins', array( $this, 'pre_current_active_plugins' ) );
+		add_action( 'plugin_action_links',               array( $this, 'plugin_action_links'        ), 10, 2 );
+		add_action( 'network_admin_plugin_action_links', array( $this, 'plugin_action_links'        ), 10, 2 );
+		add_action( 'pre_current_active_plugins',        array( $this, 'pre_current_active_plugins' ) );
 
   }
 	/**
