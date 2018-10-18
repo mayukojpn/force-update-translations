@@ -44,7 +44,8 @@ class Force_Update_Translations {
 		if ( isset( $plugin_state->response[ $plugin_file ]->id ) || isset( $plugin_state->no_update[ $plugin_file ]->id ) ) {
 			$on_wporg = true;
 		};
-		if ( $on_wporg ) {
+		// Add action if plugin is on wordpress.org and if user Locale isn't 'en_US'
+		if ( ( $on_wporg ) && ( get_user_locale() != 'en_US' ) ) {
 			$actions  = array_merge( $actions, $new_actions );
 		};
 		return $actions;
