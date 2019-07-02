@@ -2,7 +2,7 @@
 Contributors: mayukojpn, nao, dartui, pedromendonca
 Tags: translation
 Requires at least: 4.9
-Tested up to: 4.9
+Tested up to: 5.2.2
 Requires PHP: 5.2.4
 Stable tag: trunk
 License: GPLv2 or later
