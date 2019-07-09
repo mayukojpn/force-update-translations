@@ -20,6 +20,10 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 
 == Changelog ==
 
+= 0.2.4 =
+* Tested up to WP 5.2.2 props @pedromendonca
+* Check if if user Locale isn't 'en_US' props @pedromendonca
+
 = 0.2.3 =
 * Add Multisite support. props @pedromendonca
 
