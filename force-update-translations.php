@@ -23,13 +23,12 @@ class Force_Update_Translations {
 	/**
 	 * Get translation files.
 	 *
-	 * @param string $target_path   File project
-	 * @param string $target_name   File locale
+	 * @param array $project
 	 * @return null|WP_Error        File path to get source.
 	 */
-	function get_files ( $target_path, $target_name ) {
-		foreach ( array( 'po', 'mo' ) as $type ){
-			$file = $this->get_the_file( $target_path, get_user_locale(), $type );
+	function get_files ( $project ) {
+		foreach ( array( 'po', 'mo' ) as $format ){
+			$file = $this->get_file( $project, get_user_locale(), $format );
 			if( is_wp_error( $file ) ) {
 				$this->admin_notices[] = array(
 					'status'  => 'error',
@@ -43,7 +42,7 @@ class Force_Update_Translations {
 				'status'  => 'success',
 				'content' => sprintf(
 					__( 'Translation files have been exported: %s', 'force-update-translations' ),
-					'<b>' . esc_html( $target_name ) . '</b>' )
+					'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>' )
 			);
 		}
 		self::admin_notices();
@@ -52,23 +51,32 @@ class Force_Update_Translations {
 	/**
 	 * Get translation source file.
 	 *
-	 * @param string $project   File project
+	 * @param array  $project   File project
 	 * @param string $locale    File locale
 	 * @param string $format    File format
 	 * @return null|WP_Error    File path to get source.
 	 */
-	function get_the_file( $project_slug, $locale = '', $format = 'mo' ) {
+	function get_file( $project, $locale = '', $format = 'mo' ) {
 
 		if ( empty( $locale ) ) {
 			$locale = get_user_locale();
 		}
 
-		preg_match("/wp-(.*)/", $project_slug, $project_path);
+		switch ( $project['type'] ) {
+			case 'plugin':
+				$target_path  = 'plugins/' . $project['sub_project']['slug'];
+				$project_path = 'wp-' . $target_path . '/dev';
+				break;
+			case 'theme':
+				$target_path  = 'themes/'  . $project['sub_project']['slug'];
+				$project_path = 'wp-'  . $target_path;
+				break;
+		}
 
-		$source = $this->get_source_path( $project_slug, $locale, $format );
+		$source = $this->get_source_path( $project_path, $locale, $format );
 		$target = sprintf(
 			'%s-%s.%s',
-			$project_path[1],
+			$target_path,
 			$locale,
 			$format
 		);
@@ -86,20 +94,19 @@ class Force_Update_Translations {
 			return;
 		}
 	}
+
 	/**
 	 * Generate a file path to get translation file.
 	 *
 	 * @param string $project   File project
 	 * @param string $locale    File locale
-	 * @param string $type      File type
 	 * @param string $format    File format
 	 * @return $path            File path to get source.
 	 */
-	function get_source_path( $project, $locale, $format = 'mo', $type = 'dev' ) {
+	function get_source_path( $project, $locale, $format = 'mo' ) {
 		$locale = GP_Locales::by_field( 'wp_locale', $locale );
-		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/%3$s/default/export-translations?filters[status]=current_or_waiting_or_fuzzy',
+		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/default/export-translations?filters[status]=current_or_waiting_or_fuzzy',
 			$project,
-			$type,
 			$locale->slug
 		);
 		$path = ( $format == 'po' ) ? $path : $path . '&format=' . $format;

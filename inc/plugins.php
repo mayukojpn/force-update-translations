@@ -70,10 +70,15 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 
     $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
 
-    parent::get_files(
-      'wp-plugins/'. $plugin_slug[1],
-      $plugin_data['Name']
+    $project = array (
+      'type'   => 'plugin',
+      'sub_project'  => array(
+        'slug' => $plugin_slug[1],
+        'name' => $plugin_data['Name']
+      )
     );
+
+    parent::get_files( $project );
 	}
 }
 new Plugin_Force_Update_Translations;
