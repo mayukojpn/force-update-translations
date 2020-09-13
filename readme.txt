@@ -20,6 +20,9 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 
 == Changelog ==
 
+= 0.3 =
+* Added theme translation support.
+
 = 0.2.5 =
 * Tested up to WP 5.5.
 * Minor grammar correction. Props @casiepa

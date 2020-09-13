@@ -3,7 +3,7 @@
 Plugin Name: Force Update Translations
 Description: Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
 Author:      Mayo Moriyama
-Version:     0.2.5
+Version:     0.3
 */
 
 class Force_Update_Translations {
@@ -20,7 +20,7 @@ class Force_Update_Translations {
 		include 'inc/themes.php';
 
   }
-	
+
 	/**
 	 * Get translation files.
 	 *
