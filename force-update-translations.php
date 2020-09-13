@@ -8,7 +8,7 @@ Version:     0.2.5
 
 class Force_Update_Translations {
 
-	private $admin_notices = [];
+	public $admin_notices = [];
 
   /**
    * Constructor.
@@ -16,87 +16,10 @@ class Force_Update_Translations {
   function __construct() {
 
 		include 'lib/glotpress/locales.php';
-
-		add_action( 'plugin_action_links',               array( $this, 'plugin_action_links'        ), 10, 2 );
-		add_action( 'network_admin_plugin_action_links', array( $this, 'plugin_action_links'        ), 10, 2 );
-		add_action( 'pre_current_active_plugins',        array( $this, 'pre_current_active_plugins' ) );
+		include 'inc/plugins.php';
 
   }
-	/**
-	 * Add plugin action link.
-	 *
-	 * @param string $actions
-	 * @param string $plugin_file
-	 * @return array $actions    File path to get source.
-	 */
-	function plugin_action_links( $actions, $plugin_file ) {
-		$url         = admin_url( 'plugins.php?force_translate=' . $plugin_file );
-		$new_actions = array (
-			'force_translate' => sprintf(
-				'<a href="%1$s">%2$s</a>',
-				esc_url( $url ),
-				esc_html__( 'Update translation', 'force-update-translations' )
-			)
-		);
-		// Check if plugin is on wordpress.org by checking if ID (from Plugin wp.org info) exists in 'response' or 'no_update'
-		$on_wporg = false;
-		$plugin_state = get_site_transient( 'update_plugins' );
-		if ( isset( $plugin_state->response[ $plugin_file ]->id ) || isset( $plugin_state->no_update[ $plugin_file ]->id ) ) {
-			$on_wporg = true;
-		};
-		// Add action if plugin is on wordpress.org and if user Locale isn't 'en_US'
-		if ( ( $on_wporg ) && ( get_user_locale() != 'en_US' ) ) {
-			$actions  = array_merge( $actions, $new_actions );
-		};
-		return $actions;
 
-	}
-	/**
-	 * Main plugin action.
-	 *
-	 * @return null
-	 */
-	function pre_current_active_plugins() {
-		if ( !isset( $_GET['force_translate'] ) ) {
-			return;
-		}
-
-		$plugin_file = $_GET['force_translate'];
-		if ( !preg_match("/^([a-zA-Z0-9-_]+)\/([a-zA-Z0-9-_.]+.php)$/", $plugin_file, $plugin_slug) ){
-			$this->admin_notices[] = array(
-				'status'  => 'error',
-				'content' => sprintf(
-					/* Translators: %s: parameter */
-					esc_html__( 'Invalid parameter: %s', 'force-update-translations' ),
-					esc_html( $plugin_file )
-				)
-			);
-			self::admin_notices();
-			return;
-		}
-
-		foreach ( array( 'po', 'mo' ) as $type ){
-			$import = $this->import( 'wp-plugins/'. $plugin_slug[1], get_user_locale(), $type );
-			if( is_wp_error( $import ) ) {
-				$this->admin_notices[] = array(
-					'status'  => 'error',
-					'content' => $import->get_error_message()
-				);
-			}
-		} // endforeach;
-
-		if ( empty( $this->admin_notices ) ) {
-			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
-			$this->admin_notices[] = array(
-				'status'  => 'success',
-				'content' => sprintf(
-					__( 'Translation files have been exported: %s', 'force-update-translations' ),
-					'<b>' . esc_html( $plugin_data['Name'] ) . '</b>' )
-			);
-		}
-		self::admin_notices();
-
-	}
 	/**
 	 * Import translation file.
 	 *
