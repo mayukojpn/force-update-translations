@@ -17,6 +17,7 @@ class Force_Update_Translations {
 
 		include 'lib/glotpress/locales.php';
 		include 'inc/plugins.php';
+		include 'inc/themes.php';
 
   }
 	
@@ -24,7 +25,7 @@ class Force_Update_Translations {
 	 * Get translation files.
 	 *
 	 * @param array $project
-	 * @return null|WP_Error        File path to get source.
+	 * @return null|WP_Error      File path to get source.
 	 */
 	function get_files ( $project ) {
 		foreach ( array( 'po', 'mo' ) as $format ){
