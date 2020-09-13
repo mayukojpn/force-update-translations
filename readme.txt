@@ -1,5 +1,5 @@
 === Force Update Translations ===
-Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, kosgis
+Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke
 Tags: translation
 Requires at least: 4.9
 Tested up to: 5.5.1
@@ -26,7 +26,7 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 = 0.2.5 =
 * Tested up to WP 5.5.
 * Minor grammar correction. Props @casiepa
-* Added plugin icon. Props @kosgis
+* Added plugin icon. Props @mekemoke
 
 = 0.2.4 =
 * Tested up to WP 5.2.2 props @pedromendonca
