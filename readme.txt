@@ -1,8 +1,8 @@
 === Force Update Translations ===
-Contributors: mayukojpn, nao, dartui, pedromendonca
+Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa
 Tags: translation
 Requires at least: 4.9
-Tested up to: 5.2.2
+Tested up to: 5.5.1
 Requires PHP: 5.2.4
 Stable tag: trunk
 License: GPLv2 or later
@@ -19,6 +19,10 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 1. "Update translation" link will be appeard in your plugin list.
 
 == Changelog ==
+
+= 0.2.5 =
+* Tested up to WP 5.5.
+* Minor grammar correction. Props @casiepa
 
 = 0.2.4 =
 * Tested up to WP 5.2.2 props @pedromendonca
