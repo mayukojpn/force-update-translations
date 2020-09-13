@@ -19,16 +19,45 @@ class Force_Update_Translations {
 		include 'inc/plugins.php';
 
   }
+	
+	/**
+	 * Get translation files.
+	 *
+	 * @param string $target_path   File project
+	 * @param string $target_name   File locale
+	 * @return null|WP_Error        File path to get source.
+	 */
+	function get_files ( $target_path, $target_name ) {
+		foreach ( array( 'po', 'mo' ) as $type ){
+			$file = $this->get_the_file( $target_path, get_user_locale(), $type );
+			if( is_wp_error( $file ) ) {
+				$this->admin_notices[] = array(
+					'status'  => 'error',
+					'content' => $file->get_error_message()
+				);
+			}
+		} // endforeach;
+
+		if ( empty( $this->admin_notices ) ) {
+			$this->admin_notices[] = array(
+				'status'  => 'success',
+				'content' => sprintf(
+					__( 'Translation files have been exported: %s', 'force-update-translations' ),
+					'<b>' . esc_html( $target_name ) . '</b>' )
+			);
+		}
+		self::admin_notices();
+	}
 
 	/**
-	 * Import translation file.
+	 * Get translation source file.
 	 *
 	 * @param string $project   File project
 	 * @param string $locale    File locale
 	 * @param string $format    File format
 	 * @return null|WP_Error    File path to get source.
 	 */
-	function import( $project_slug, $locale = '', $format = 'mo' ) {
+	function get_the_file( $project_slug, $locale = '', $format = 'mo' ) {
 
 		if ( empty( $locale ) ) {
 			$locale = get_user_locale();

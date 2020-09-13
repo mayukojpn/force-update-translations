@@ -68,27 +68,12 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			return;
 		}
 
-		foreach ( array( 'po', 'mo' ) as $type ){
-			$import = $this->import( 'wp-plugins/'. $plugin_slug[1], get_user_locale(), $type );
-			if( is_wp_error( $import ) ) {
-				$this->admin_notices[] = array(
-					'status'  => 'error',
-					'content' => $import->get_error_message()
-				);
-			}
-		} // endforeach;
+    $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
 
-		if ( empty( $this->admin_notices ) ) {
-			$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
-			$this->admin_notices[] = array(
-				'status'  => 'success',
-				'content' => sprintf(
-					__( 'Translation files have been exported: %s', 'force-update-translations' ),
-					'<b>' . esc_html( $plugin_data['Name'] ) . '</b>' )
-			);
-		}
-		static::admin_notices();
-
+    parent::get_files(
+      'wp-plugins/'. $plugin_slug[1],
+      $plugin_data['Name']
+    );
 	}
 }
 new Plugin_Force_Update_Translations;
