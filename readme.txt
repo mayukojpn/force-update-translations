@@ -8,11 +8,11 @@ Stable tag: 0.2.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
+Download WordPress plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
 
 == Description ==
 
-Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
+Download WordPress plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
 
 == Screenshots ==
 
