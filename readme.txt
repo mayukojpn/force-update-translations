@@ -4,7 +4,7 @@ Tags: translation
 Requires at least: 4.9
 Tested up to: 5.5.1
 Requires PHP: 5.2.4
-Stable tag: 0.2.5
+Stable tag: 0.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -13,6 +13,21 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 == Description ==
 
 Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
+
+== Theme translation ==
+
+Finally, updating theme translation file is now supported! To download the translation file for a theme:
+
+1. Activate the theme you want to get translation file.
+1. visit 'Appearance' > 'Update Translation' in WordPress menu, or click 'Update Translation' on theme detail of current theme on 'Theme' page.
+
+== Plugin translation ==
+
+To download the translation file for a plugin:
+
+1. Visit 'Plugin' in WordPress menu.
+1. Click 'Update translation' under the name of the plugin for which you want to get the translation file.
+
 
 == Screenshots ==
 
@@ -45,3 +60,8 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 = 0.2 =
 * Export only Current/Waiting/Fuzzy translations. props @nao
 * Capitalize plugin name.
+
+== Upgrade Notice ==
+
+= 3.0 =
+* Added theme translation support.
