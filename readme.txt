@@ -14,6 +14,21 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 
 Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
 
+== Theme translation ==
+
+Finally, updating theme translation file is now supported! To download the translation file for a theme:
+
+1. Activate the theme you want to get translation file.
+1. visit 'Appearance' > 'Update Translation' in WordPress menu, or click 'Update Translation' on theme detail of current theme on 'Theme' page.
+
+== Plugin translation ==
+
+To download the translation file for a plugin:
+
+1. Visit 'Plugin' in WordPress menu.
+1. Click 'Update translation' under the name of the plugin for which you want to get the translation file.
+
+
 == Screenshots ==
 
 1. "Update translation" link will be appeard in your plugin list.
@@ -45,3 +60,8 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 = 0.2 =
 * Export only Current/Waiting/Fuzzy translations. props @nao
 * Capitalize plugin name.
+
+== Upgrade Notice ==
+
+= 3.0 =
+* Added theme translation support.
