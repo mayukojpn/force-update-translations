@@ -4,7 +4,7 @@ Tags: translation
 Requires at least: 4.9
 Tested up to: 5.5.1
 Requires PHP: 5.2.4
-Stable tag: 0.3
+Stable tag: 0.3.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,7 +35,7 @@ To download the translation file for a plugin:
 
 == Changelog ==
 
-= 0.3 =
+= 0.3.0 =
 * Added theme translation support.
 
 = 0.2.5 =
