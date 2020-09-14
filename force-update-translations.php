@@ -106,9 +106,16 @@ class Force_Update_Translations {
 	 */
 	function get_source_path( $project, $locale, $format = 'mo' ) {
 		$locale = GP_Locales::by_field( 'wp_locale', $locale );
+
+		// Defaults to 'slug/default' if is a Root Locale, 'slug/variant' if is variant.
+		$locale_slug = $locale->slug;
+		if ( ! isset( $locale->root_slug ) ) {
+			$locale_slug .= '/default';
+		}
+
 		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/export-translations?filters[status]=current_or_waiting_or_fuzzy',
 			$project,
-			$locale->slug
+			$locale_slug
 		);
 		$path = ( $format == 'po' ) ? $path : $path . '&format=' . $format;
 		$path = esc_url_raw( $path );
