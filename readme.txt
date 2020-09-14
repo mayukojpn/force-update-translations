@@ -4,7 +4,7 @@ Tags: translation
 Requires at least: 4.9
 Tested up to: 5.5.1
 Requires PHP: 5.2.4
-Stable tag: 0.3.0
+Stable tag: 0.3.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -35,6 +35,9 @@ To download the translation file for a plugin:
 
 == Changelog ==
 
+= 0.3.1 =
+* Update locales.php and add WP.org variants support. props @pedromendonca
+
 = 0.3.0 =
 * Added theme translation support.
 
@@ -63,5 +66,5 @@ To download the translation file for a plugin:
 
 == Upgrade Notice ==
 
-= 3.0 =
+= 3.0.0 =
 * Added theme translation support.
