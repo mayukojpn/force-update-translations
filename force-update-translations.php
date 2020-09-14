@@ -106,7 +106,7 @@ class Force_Update_Translations {
 	 */
 	function get_source_path( $project, $locale, $format = 'mo' ) {
 		$locale = GP_Locales::by_field( 'wp_locale', $locale );
-		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/default/export-translations?filters[status]=current_or_waiting_or_fuzzy',
+		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/export-translations?filters[status]=current_or_waiting_or_fuzzy',
 			$project,
 			$locale->slug
 		);
