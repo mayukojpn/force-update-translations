@@ -1,5 +1,5 @@
 === Force Update Translations ===
-Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke
+Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke, miyauchi
 Tags: translation
 Requires at least: 4.9
 Tested up to: 5.5.1
