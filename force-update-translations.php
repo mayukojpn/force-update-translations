@@ -32,7 +32,7 @@ class Force_Update_Translations {
 			if ( is_wp_error( $file ) ) {
 				$this->admin_notices[] = array(
 					'status'  => 'error',
-					'content' => $file->get_error_message()
+					'content' => $file->get_error_message(),
 				);
 			}
 		} // endforeach;
@@ -42,7 +42,8 @@ class Force_Update_Translations {
 				'status'  => 'success',
 				'content' => sprintf(
 					__( 'Translation files have been exported: %s', 'force-update-translations' ),
-					'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>' )
+					'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>'
+				),
 			);
 		}
 		self::admin_notices();
