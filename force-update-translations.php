@@ -41,6 +41,7 @@ class Force_Update_Translations {
 			$this->admin_notices[] = array(
 				'status'  => 'success',
 				'content' => sprintf(
+					/* translators: %s: Translation file. */
 					__( 'Translation files have been exported: %s', 'force-update-translations' ),
 					'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>'
 				),
@@ -87,6 +88,7 @@ class Force_Update_Translations {
 		if ( ! is_array( $response )
 			|| $response['headers']['content-type'] !== 'application/octet-stream' ) {
 			return new WP_Error( 'fdt-source-not-found', sprintf(
+				/* translators: %s: Translation file. */
 				__( 'Cannot get source file: %s', 'force-update-translations' ),
 				'<b>' . esc_html( $source ) . '</b>'
 			) );
