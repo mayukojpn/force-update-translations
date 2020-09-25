@@ -23,7 +23,7 @@ class Force_Update_Translations {
 	/**
 	 * Get translation files.
 	 *
-	 * @param array $project
+	 * @param array $project      Project array.
 	 * @return null|WP_Error      File path to get source.
 	 */
 	public function get_files( $project ) {
@@ -53,10 +53,10 @@ class Force_Update_Translations {
 	/**
 	 * Get translation source file.
 	 *
-	 * @param array  $project   File project
-	 * @param string $locale    File locale
-	 * @param string $format    File format
-	 * @return null|WP_Error    File path to get source.
+	 * @param array  $project   File project.
+	 * @param string $locale    File locale.
+	 * @param string $format    File format.
+	 * @return null|WP_Error    File path to get source..
 	 */
 	public function get_file( $project, $locale = '', $format = 'mo' ) {
 
