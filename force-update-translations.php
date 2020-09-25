@@ -127,7 +127,6 @@ class Force_Update_Translations {
 
 	/**
 	 * Prints admin screen notices.
-	 *
 	 */
 	public function admin_notices() {
 		if ( empty( $this->admin_notices ) ) {
@@ -143,4 +142,4 @@ class Force_Update_Translations {
 	}
 }
 
-new Force_Update_Translations;
+new Force_Update_Translations();
