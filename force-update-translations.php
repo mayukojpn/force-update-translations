@@ -9,10 +9,10 @@ class Force_Update_Translations {
 
 	public $admin_notices = [];
 
-  function __construct() {
 	/**
 	 * Constructor.
 	 */
+	public function __construct() {
 
 		include 'lib/glotpress/locales.php';
 		include 'inc/plugins.php';
@@ -26,7 +26,7 @@ class Force_Update_Translations {
 	 * @param array $project
 	 * @return null|WP_Error      File path to get source.
 	 */
-	function get_files ( $project ) {
+	public function get_files( $project ) {
 		foreach ( array( 'po', 'mo' ) as $format ) {
 			$file = $this->get_file( $project, get_user_locale(), $format );
 			if ( is_wp_error( $file ) ) {
@@ -56,7 +56,7 @@ class Force_Update_Translations {
 	 * @param string $format    File format
 	 * @return null|WP_Error    File path to get source.
 	 */
-	function get_file( $project, $locale = '', $format = 'mo' ) {
+	public function get_file( $project, $locale = '', $format = 'mo' ) {
 
 		if ( empty( $locale ) ) {
 			$locale = get_user_locale();
@@ -104,7 +104,7 @@ class Force_Update_Translations {
 	 * @param string $format    File format
 	 * @return $path            File path to get source.
 	 */
-	function get_source_path( $project, $locale, $format = 'mo' ) {
+	public function get_source_path( $project, $locale, $format = 'mo' ) {
 		$locale = GP_Locales::by_field( 'wp_locale', $locale );
 
 		// Defaults to 'slug/default' if is a Root Locale, 'slug/variant' if is variant.
@@ -126,7 +126,7 @@ class Force_Update_Translations {
 	 * Prints admin screen notices.
 	 *
 	 */
-	function admin_notices() {
+	public function admin_notices() {
 		if ( empty( $this->admin_notices ) ) {
 			return;
 		}
