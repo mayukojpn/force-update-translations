@@ -120,7 +120,7 @@ class Force_Update_Translations {
 			$project,
 			$locale_slug
 		);
-		$path = ( $format == 'po' ) ? $path : $path . '&format=' . $format;
+		$path = ( 'po' === $format ) ? $path : $path . '&format=' . $format;
 		$path = esc_url_raw( $path );
 		return $path;
 	}
