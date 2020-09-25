@@ -9,16 +9,16 @@ class Force_Update_Translations {
 
 	public $admin_notices = [];
 
-  /**
-   * Constructor.
-   */
   function __construct() {
+	/**
+	 * Constructor.
+	 */
 
 		include 'lib/glotpress/locales.php';
 		include 'inc/plugins.php';
 		include 'inc/themes.php';
 
-  }
+	}
 
 	/**
 	 * Get translation files.
@@ -27,9 +27,9 @@ class Force_Update_Translations {
 	 * @return null|WP_Error      File path to get source.
 	 */
 	function get_files ( $project ) {
-		foreach ( array( 'po', 'mo' ) as $format ){
+		foreach ( array( 'po', 'mo' ) as $format ) {
 			$file = $this->get_file( $project, get_user_locale(), $format );
-			if( is_wp_error( $file ) ) {
+			if ( is_wp_error( $file ) ) {
 				$this->admin_notices[] = array(
 					'status'  => 'error',
 					'content' => $file->get_error_message()
@@ -68,8 +68,8 @@ class Force_Update_Translations {
 				$project_path = 'wp-' . $target_path . '/dev';
 				break;
 			case 'theme':
-				$target_path  = 'themes/'  . $project['sub_project']['slug'];
-				$project_path = 'wp-'  . $target_path;
+				$target_path  = 'themes/' . $project['sub_project']['slug'];
+				$project_path = 'wp-' . $target_path;
 				break;
 		}
 
@@ -80,9 +80,10 @@ class Force_Update_Translations {
 			$locale,
 			$format
 		);
+
 		$response = wp_remote_get( $source );
 
-		if ( !is_array( $response )
+		if ( ! is_array( $response )
 			|| $response['headers']['content-type'] !== 'application/octet-stream' ) {
 			return new WP_Error( 'fdt-source-not-found', sprintf(
 				__( 'Cannot get source file: %s', 'force-update-translations' ),
@@ -132,7 +133,7 @@ class Force_Update_Translations {
 		foreach ( $this->admin_notices as $notice ) {
 			?>
 			<div class="notice notice-<?php echo esc_attr( $notice['status'] ); ?>">
-					<p><?php echo $notice['content']; // WPCS: XSS OK. ?></p>
+				<p><?php echo $notice['content']; // WPCS: XSS OK. ?></p>
 			</div>
 			<?php
 		}
