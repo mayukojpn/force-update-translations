@@ -3,7 +3,7 @@
  * Plugin Name: Force Update Translations
  * Description: Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
  * Author:      Mayo Moriyama
- * Version:     0.3.1
+ * Version:     0.3.2
  */
 class Force_Update_Translations {
 
@@ -42,7 +42,7 @@ class Force_Update_Translations {
 				'status'  => 'success',
 				'content' => sprintf(
 					/* translators: %s: Translation file. */
-					__( 'Translation files have been exported: %s', 'force-update-translations' ),
+					__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
 					'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>'
 				),
 			);
