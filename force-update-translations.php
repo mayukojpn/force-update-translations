@@ -94,7 +94,13 @@ class Force_Update_Translations {
 			) );
 		}
 		else {
-			file_put_contents( WP_LANG_DIR . '/' . $target, $response['body'] );
+			$translationPath = WP_LANG_DIR . '/' . $target;
+
+			if ( !file_exists( pathinfo($translationPath,  PATHINFO_DIRNAME ) ) ) {
+				mkdir( pathinfo( $translationPath,  PATHINFO_DIRNAME ), 0777, true );
+			}
+
+			file_put_contents( $translationPath , $response['body'] );
 			return;
 		}
 	}
