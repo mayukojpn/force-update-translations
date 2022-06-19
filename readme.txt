@@ -4,7 +4,7 @@ Tags: translation
 Requires at least: 4.9
 Tested up to: 6.0
 Requires PHP: 5.2.4
-Stable tag: 0.3.3
+Stable tag: 0.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -40,5 +40,8 @@ To read the changelog for the latest the plugin release, please navigate to the 
 
 == Upgrade Notice ==
 
-= 3.0.0 =
+= 0.4 =
+* Bug fix for fresh installed WP.
+
+= 0.3 =
 * Added theme translation support.

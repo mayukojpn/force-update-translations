@@ -24,6 +24,9 @@ To download the translation files for a plugin:
 
 ## Changelog
 
+= 0.4 =
+* Bug fix for fresh installed WP. props @Dartui
+
 = 0.3.2 & 0.3.3 =
 * Update tested up to versions.
 
