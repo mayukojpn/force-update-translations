@@ -2,7 +2,7 @@
 Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke, miyauchi, nekojonez
 Tags: translation
 Requires at least: 4.9
-Tested up to: 6.0
+Tested up to: 6.0.2
 Requires PHP: 5.2.4
 Stable tag: 0.4
 License: GPLv2 or later
@@ -14,7 +14,7 @@ Download WordPress theme/plugin translations and apply them to your site manuall
 
 Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
 
-⚠️ Warning ⚠️ Currently this plugin does not download waiting/fizzy strings. Please wait for bugfix or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
+⚠️ Warning ⚠️ Currently this plugin does not download waiting/fuzzy strings. Please wait for bugfix or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
 
 ⚠️ Warning ⚠️ Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
 
