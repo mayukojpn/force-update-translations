@@ -2,7 +2,8 @@
 /**
  * Plugin Name: Force Update Translations
  * Description: Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
- * Author:      Mayo Moriyama
+ * Author:      Mayo Moriyama & Contributors
+ * Author URI:  https://github.com/mayukojpn/force-update-translations/graphs/contributors
  * Version:     0.4
  */
 class Force_Update_Translations {
