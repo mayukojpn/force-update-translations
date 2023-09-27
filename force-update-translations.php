@@ -24,22 +24,23 @@ class Force_Update_Translations {
 	/**
 	 * Get translation files.
 	 *
-	 * @param array $project      Project array.
+	 * @param array $projects     Array of translation projects.
 	 * @return null|WP_Error      File path to get source.
 	 */
-	public function get_files( $project ) {
+	public function get_files( $projects ) {
+		foreach ( $projects as $key => $project ) {
 		foreach ( array( 'po', 'mo' ) as $format ) {
 			$file = $this->get_file( $project, get_user_locale(), $format );
 			if ( is_wp_error( $file ) ) {
-				$this->admin_notices[] = array(
+				$this->admin_notices[ $key ][] = array(
 					'status'  => 'error',
 					'content' => $file->get_error_message(),
 				);
 			}
 		} // endforeach;
 
-		if ( empty( $this->admin_notices ) ) {
-			$this->admin_notices[] = array(
+		if ( empty( $this->admin_notices[ $key ] ) ) {
+			$this->admin_notices[ $key ][] = array(
 				'status'  => 'success',
 				'content' => sprintf(
 					/* translators: %s: Translation file. */
@@ -48,6 +49,9 @@ class Force_Update_Translations {
 				),
 			);
 		}
+		}
+
+		// Show admin notices of the projects translation update.
 		self::admin_notices();
 	}
 
@@ -139,12 +143,14 @@ class Force_Update_Translations {
 		if ( empty( $this->admin_notices ) ) {
 			return;
 		}
-		foreach ( $this->admin_notices as $notice ) {
-			?>
-			<div class="notice notice-<?php echo esc_attr( $notice['status'] ); ?>">
-				<p><?php echo $notice['content']; // WPCS: XSS OK. ?></p>
-			</div>
-			<?php
+		foreach ( $this->admin_notices as $project ) {
+			foreach ( $project as $notice ) {
+				?>
+				<div class="notice notice-<?php echo esc_attr( $notice['status'] ); ?>">
+					<p><?php echo $notice['content']; // WPCS: XSS OK. ?></p>
+				</div>
+				<?php
+			}
 		}
 	}
 }

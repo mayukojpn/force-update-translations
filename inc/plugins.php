@@ -70,7 +70,7 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 
     $plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
 
-    $project = array (
+    $projects[ $plugin_file ] = array (
       'type'   => 'plugin',
       'sub_project'  => array(
         'slug' => $plugin_slug[1],
@@ -78,7 +78,7 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
       )
     );
 
-    parent::get_files( $project );
+    parent::get_files( $projects );
 	}
 }
 new Plugin_Force_Update_Translations;

@@ -30,9 +30,10 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
 
   function get_theme_translations() {
 
+    // Get current theme data.
     $current_theme = wp_get_theme();
 
-    $project = array (
+    $projects[ $current_theme->get_stylesheet() ] = array (
       'type'   => 'theme',
       'sub_project'  => array(
         'slug' => $current_theme->get( 'TextDomain' ),
@@ -40,7 +41,7 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
       )
     );
 
-    parent::get_files( $project );
+    parent::get_files( $projects );
 
   }
 
