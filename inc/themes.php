@@ -33,14 +33,40 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
     // Get current theme data.
     $current_theme = wp_get_theme();
 
-    $projects[ $current_theme->get_stylesheet() ] = array (
-      'type'   => 'theme',
-      'sub_project'  => array(
-        'slug' => $current_theme->get( 'TextDomain' ),
-        'name' => $current_theme->get( 'Name' )
-      )
-    );
+    // Add current theme.
+    $themes[ $current_theme->get_stylesheet() ] = $current_theme;
 
+    // Get parent theme data.
+    $parent_theme = $current_theme->parent();
+    // Check if has a parent theme and it exists.
+    if ( $parent_theme && $parent_theme->exists() ) {
+      // Add parent theme.
+      $themes[ $parent_theme->get_stylesheet() ] = $parent_theme;
+    }
+
+    // Get installed themes update transient.
+    $installed_themes = get_site_transient( 'update_themes' );
+
+    $projects = array();
+
+    foreach ( $themes as $stylesheet => $theme ) {
+
+      // Check if theme is on wordpress.org by checking if the stylesheet (from Theme wp.org info) exists in 'response' or 'no_update'.
+      if ( isset( $installed_themes->response[ $theme->get_stylesheet() ] ) || isset( $installed_themes->no_update[ $theme->get_stylesheet() ] ) ) {
+
+        $projects[ $stylesheet ] = array (
+          'type'   => 'theme',
+          'sub_project'  => array(
+            'slug' => $theme->get( 'TextDomain' ),
+            'name' => $theme->get( 'Name' )
+          )
+        );
+
+      };
+
+    }
+
+    // Get projects translation files.
     parent::get_files( $projects );
 
   }
