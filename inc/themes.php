@@ -11,7 +11,10 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
    * Constructor.
    */
   function __construct() {
-    add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+    // Add theme translation option if user Locale is not 'en_US'.
+    if ( get_user_locale() !== 'en_US' ) {
+      add_action( 'admin_menu', array( $this, 'admin_menu' ) );
+    };
   }
 
   /**
