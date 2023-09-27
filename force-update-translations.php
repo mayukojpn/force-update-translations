@@ -29,26 +29,26 @@ class Force_Update_Translations {
 	 */
 	public function get_files( $projects ) {
 		foreach ( $projects as $key => $project ) {
-		foreach ( array( 'po', 'mo' ) as $format ) {
-			$file = $this->get_file( $project, get_user_locale(), $format );
-			if ( is_wp_error( $file ) ) {
+			foreach ( array( 'po', 'mo' ) as $format ) {
+				$file = $this->get_file( $project, get_user_locale(), $format );
+				if ( is_wp_error( $file ) ) {
+					$this->admin_notices[ $key ][] = array(
+						'status'  => 'error',
+						'content' => $file->get_error_message(),
+					);
+				}
+			} // endforeach;
+
+			if ( empty( $this->admin_notices[ $key ] ) ) {
 				$this->admin_notices[ $key ][] = array(
-					'status'  => 'error',
-					'content' => $file->get_error_message(),
+					'status'  => 'success',
+					'content' => sprintf(
+						/* translators: %s: Translation file. */
+						__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
+						'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>'
+					),
 				);
 			}
-		} // endforeach;
-
-		if ( empty( $this->admin_notices[ $key ] ) ) {
-			$this->admin_notices[ $key ][] = array(
-				'status'  => 'success',
-				'content' => sprintf(
-					/* translators: %s: Translation file. */
-					__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
-					'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>'
-				),
-			);
-		}
 		}
 
 		// Show admin notices of the projects translation update.
