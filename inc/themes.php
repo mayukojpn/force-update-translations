@@ -69,8 +69,17 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
 
     }
 
-    // Get projects translation files.
-    parent::get_files( $projects );
+	?>
+	<div class="wrap">
+		<h1><?php esc_html_e( 'Themes Translations', 'force-update-translations' ); ?></h1>
+		<div class="update-messages">
+			<?php
+			// Get projects translation files.
+		    parent::get_files( $projects );
+			?>
+		</div>
+	</div>
+	<?php
 
   }
 
