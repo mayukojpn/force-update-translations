@@ -8,7 +8,7 @@
  */
 class Force_Update_Translations {
 
-	public $admin_notices = [];
+	public $admin_notices = array();
 
 	/**
 	 * Constructor.
@@ -25,7 +25,8 @@ class Force_Update_Translations {
 	 * Get translation files.
 	 *
 	 * @param array $projects     Array of translation projects.
-	 * @return null|WP_Error      File path to get source.
+	 *
+	 * @return void
 	 */
 	public function get_files( $projects ) {
 		foreach ( $projects as $key => $project ) {
@@ -61,6 +62,7 @@ class Force_Update_Translations {
 	 * @param array  $project   File project.
 	 * @param string $locale    File locale.
 	 * @param string $format    File format.
+	 *
 	 * @return null|WP_Error    File path to get source..
 	 */
 	public function get_file( $project, $locale = '', $format = 'mo' ) {
@@ -92,20 +94,22 @@ class Force_Update_Translations {
 
 		if ( ! is_array( $response )
 			|| $response['headers']['content-type'] !== 'application/octet-stream' ) {
-			return new WP_Error( 'fdt-source-not-found', sprintf(
-				/* translators: %s: Translation file. */
-				__( 'Cannot get source file: %s', 'force-update-translations' ),
-				'<b>' . esc_html( $source ) . '</b>'
-			) );
-		}
-		else {
-			$translationPath = WP_LANG_DIR . '/' . $target;
+			return new WP_Error(
+				'fdt-source-not-found',
+				sprintf(
+					/* translators: %s: Translation file. */
+					__( 'Cannot get source file: %s', 'force-update-translations' ),
+					'<b>' . esc_html( $source ) . '</b>'
+				)
+			);
+		} else {
+			$translation_path = WP_LANG_DIR . '/' . $target;
 
-			if ( !file_exists( pathinfo($translationPath,  PATHINFO_DIRNAME ) ) ) {
-				mkdir( pathinfo( $translationPath,  PATHINFO_DIRNAME ), 0777, true );
+			if ( ! file_exists( pathinfo( $translation_path,  PATHINFO_DIRNAME ) ) ) {
+				mkdir( pathinfo( $translation_path, PATHINFO_DIRNAME ), 0777, true );
 			}
 
-			file_put_contents( $translationPath , $response['body'] );
+			file_put_contents( $translation_path, $response['body'] ); // phpcs:ignore
 			return;
 		}
 	}
@@ -113,9 +117,9 @@ class Force_Update_Translations {
 	/**
 	 * Generate a file path to get translation file.
 	 *
-	 * @param string $project   File project
-	 * @param string $locale    File locale
-	 * @param string $format    File format
+	 * @param string $project   File project.
+	 * @param string $locale    File locale.
+	 * @param string $format    File format.
 	 * @return $path            File path to get source.
 	 */
 	public function get_source_path( $project, $locale, $format = 'mo' ) {
@@ -127,11 +131,12 @@ class Force_Update_Translations {
 			$locale_slug .= '/default';
 		}
 
-		$path = sprintf( 'https://translate.wordpress.org/projects/%1$s/%2$s/export-translations?filters[status]=current_or_waiting_or_fuzzy',
+		$path = sprintf(
+			'https://translate.wordpress.org/projects/%1$s/%2$s/export-translations?filters[status]=current_or_waiting_or_fuzzy',
 			$project,
 			$locale_slug
 		);
-		$path = ( 'po' === $format ) ? $path : $path . '&format=' . $format;
+		$path = ( $format === 'po' ) ? $path : $path . '&format=' . $format;
 		$path = esc_url_raw( $path );
 		return $path;
 	}
