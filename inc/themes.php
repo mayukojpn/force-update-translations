@@ -73,7 +73,17 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
 
 	?>
 	<div class="wrap">
-		<h1><?php esc_html_e( 'Themes Translations', 'force-update-translations' ); ?></h1>
+		<h1><?php esc_html_e( 'Update Translations', 'force-update-translations' ); ?></h1>
+		<p>
+			<?php 
+			// Check if has a parent theme and it exists.
+			if ( $parent_theme && $parent_theme->exists() ) {
+				esc_html_e( 'Translation updates for your active child and parent themes.', 'force-update-translations' );
+			} else {
+				esc_html_e( 'Translation updates for your active theme.', 'force-update-translations' );
+			}
+			?>
+		</p>
 		<div class="update-messages">
 			<?php
 			// Get projects translation files.
