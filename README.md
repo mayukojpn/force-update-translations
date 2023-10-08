@@ -26,6 +26,9 @@ To download the translation files for a plugin:
 
 ## Changelog
 
+= 0.5 =
+* Child theme support. props @pedro-mendonca
+
 = 0.4 =
 * Bug fix for fresh installed WP. props @Dartui
 
