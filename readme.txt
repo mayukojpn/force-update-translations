@@ -4,7 +4,7 @@ Tags: translation
 Requires at least: 4.9
 Tested up to: 6.3
 Requires PHP: 5.2.4
-Stable tag: 0.4.1
+Stable tag: 0.5
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,9 @@ To download the translation files for a plugin:
 To read the changelog for the latest the plugin release, please navigate to the <a href="https://github.com/mayukojpn/force-update-translations#changelog">GitHub</a>.
 
 == Upgrade Notice ==
+
+= 0.5 =
+* Child theme support.
 
 = 0.4 =
 * Bug fix for fresh installed WP.
