@@ -2,7 +2,7 @@
 Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke, miyauchi, nekojonez
 Tags: translation
 Requires at least: 4.9
-Tested up to: 6.3
+Tested up to: 6.4.1
 Requires PHP: 5.2.4
 Stable tag: 0.5
 License: GPLv2 or later
