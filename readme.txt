@@ -47,7 +47,3 @@ To read the changelog for the latest the plugin release, please navigate to the 
 
 = 0.6.0 =
 * Security fix for CVE-2025-58236. Update recommended.
-
-== Frequently Asked Questions ==
-= Where do I report security bugs found in this plugin? =
-Please report security bugs found in the source code of the Force Update Translations plugin through the [Patchstack Vulnerability Disclosure Program](https://patchstack.com/database/vdp/96fd2d66-54a9-4344-8c9e-eff7f209f90c). The Patchstack team will assist you with verification, CVE assignment, and notify the developers of this plugin.
