@@ -26,7 +26,7 @@ To download the translation files for a plugin:
 
 ## Changelog
 
-= 0.6.0 - 2024-12-17 =
+= 0.6.0 - 2025-12-17 =
 * Security: Fixed CSRF vulnerability (CVE-2025-58236)
 * Security: Added nonce verification and permission checks for translation updates
 * Security: Improved input validation and path traversal protection
