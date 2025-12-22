@@ -5,6 +5,10 @@
  * Author:      Mayo Moriyama & Contributors
  * Author URI:  https://github.com/mayukojpn/force-update-translations/graphs/contributors
  * Version:     0.6.1
+ * Requires at least: 4.7
+ * Requires PHP: 5.6
+ * Text Domain: force-update-translations
+ * Domain Path: /languages
  *
  * @package Force_Update_Translations
  */
