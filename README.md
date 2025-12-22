@@ -2,7 +2,7 @@
 
 ## Description
 
-Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
+Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
 > **Warning**: Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
 

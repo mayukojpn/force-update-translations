@@ -7,11 +7,11 @@ Stable tag: 0.6.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
+Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
 == Description ==
 
-Download WordPress theme/plugin translations and apply them to your site manually even if their language pack haven't been released or reviewed on translate.wordpress.org
+Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
 **Note about Translation Playground:**
 The [Translation Playground](https://make.wordpress.org/polyglots/2023/04/19/wp-translation-playground/) is now available for quick translation testing. However, if you need to test translations on your actual site, this plugin may remain the practical solution.
