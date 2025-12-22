@@ -92,7 +92,7 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			$this->admin_notices['error'][] = array(
 				'status'  => 'error',
 				'content' => sprintf(
-					/* Translators: %s: parameter */
+					/* translators: %s: parameter */
 					esc_html__( 'Invalid parameter: %s', 'force-update-translations' ),
 					esc_html( $plugin_file )
 				),
@@ -108,8 +108,8 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			$this->admin_notices['error'][] = array(
 				'status'  => 'error',
 				'content' => sprintf(
-					/* Translators: %s: plugin file path (e.g., plugin-name/plugin-file.php) */
-			    esc_html__( 'The plugin file could not be found or is invalid: %s', 'force-update-translations' ),
+					/* translators: %s: plugin file path (e.g., plugin-name/plugin-file.php) */
+					esc_html__( 'The plugin file could not be found or is invalid: %s', 'force-update-translations' ),
 					esc_html( $plugin_file )
 				),
 			);
