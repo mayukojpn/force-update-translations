@@ -4,7 +4,7 @@ Tags: translation
 Requires at least: 4.7
 Tested up to: 6.9
 Requires PHP: 5.6
-Stable tag: 0.6.1
+Stable tag: 0.6.4
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -14,31 +14,22 @@ Apply WordPress.org theme and plugin translations to a site even if translations
 
 Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
-**Note about Translation Playground:**
-The [Translation Playground](https://make.wordpress.org/polyglots/2023/04/19/wp-translation-playground/) is now available for quick translation testing. However, if you need to test translations on your actual site, this plugin may remain the practical solution.
-
-⚠️ Warning ⚠️ Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
-
-⚠️ Warning ⚠️ Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
-
-== Theme translation ==
-
-To download the translation files for a theme:
-
-1. Activate the theme you want to get the translation files.
-1. Visit 'Appearance' > 'Update translation' in WordPress menu, or click 'Update translation' on theme details of current theme on 'Themes' page.
-1. Click the 'Update Translations' button.
+This plugin exports translations from translate.wordpress.org including Current, Waiting (suggestions), and Fuzzy strings, writes them into your site language directory, and generates Jed JSON files so JavaScript translations can apply as well.
 
 == Plugin translation ==
 
-To download the translation files for a plugin:
-
 1. Visit 'Plugins' in WordPress menu.
-1. Click 'Update translation' under the name of the plugin for which you want to get the translation files.
+1. Under the plugin name, choose 'Update translation: Stable' or 'Development'.
 
-== Screenshots ==
+== Theme translation ==
 
-1. "Update translation" link will be shown in your plugins list.
+1. Activate the theme you want to get the translation files.
+1. Visit 'Appearance' > 'Update translation' in the WordPress admin.
+1. Click the 'Update translation' button.
+
+== Settings ==
+
+Visit 'Settings' > 'Force Update Translations' to choose the locale source (user or site language), protect forced translations from official language-pack overwrites, and bulk-update plugin translations.
 
 == Changelog ==
 

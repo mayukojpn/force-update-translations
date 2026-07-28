@@ -4,27 +4,40 @@
 
 Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
-> **Warning**: Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
-
-> **Warning**: Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
+This plugin exports Current + Waiting (suggestions) + Fuzzy strings from translate.wordpress.org, writes them into `WP_LANG_DIR`, and generates Jed JSON / `.l10n.php` so PHP and JavaScript strings can both apply.
 
 ## Usage
 
-### Theme translation
-
-Finally, updating theme translation files is now supported! To download the translation files for a theme:
-
-1. Activate the theme you want to get the translation files.
-1. Visit 'Appearance' > 'Update translation' in WordPress menu, or click 'Update translation' on theme details of current theme on 'Themes' page.
-
 ### Plugin translation
 
-To download the translation files for a plugin:
+1. Visit **Plugins**.
+1. Under a WordPress.org plugin, choose **Update translation: Stable** or **Development**.
+1. The link marked `(current)` shows which source is installed locally.
 
-1. Visit 'Plugins' in WordPress menu.
-1. Click 'Update translation' under the name of the plugin for which you want to get the translation files.
+### Theme translation
+
+1. Activate the theme you want to update.
+1. Visit **Appearance → Update translation**.
+1. Click **Update translation**.
+
+### Settings
+
+Visit **Settings → Force Update Translations** to:
+
+- Choose whether downloads use the **user language** or the **site language**
+- Enable/disable protection against official language-pack overwrites
+- Bulk-update translations for installed WordPress.org plugins
 
 ## Changelog
+
+= 0.6.4 - 2026-07-28 =
+* Feature: Settings screen for locale source (user vs site language)
+* Feature: Protect forced translations from being overwritten by official language packs
+* Feature: Bulk update for installed WordPress.org plugins
+
+= 0.6.3 - 2026-07-28 =
+* Feature: Choose Stable or Development as the translation source when updating plugin translations
+* Feature: Show whether installed plugin translations came from Stable or Development
 
 = 0.6.0 - 2025-12-17 =
 * Security: Fixed CSRF vulnerability (CVE-2025-58236)
