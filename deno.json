@@ -1,0 +1,16 @@
+{
+	"tasks": {
+		"check": "deno fmt --check deno.json composer.json && deno task lint:php",
+		"format": "deno task format:php",
+		"format:php": "composer format",
+		"lint": "deno task lint:php",
+		"lint:php": "composer lint"
+	},
+	"fmt": {
+		"indentWidth": 4,
+		"useTabs": true,
+		"lineWidth": 400,
+		"include": ["deno.json", "composer.json"],
+		"exclude": ["vendor", ".github"]
+	}
+}
