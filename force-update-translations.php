@@ -4,7 +4,7 @@
  * Description: Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
  * Author:      Mayo Moriyama & Contributors
  * Author URI:  https://github.com/mayukojpn/force-update-translations/graphs/contributors
- * Version:     0.6.3
+ * Version:     0.6.4
  * Requires at least: 4.7
  * Requires PHP: 5.6
  * Text Domain: force-update-translations
@@ -21,6 +21,20 @@
 class Force_Update_Translations {
 
 	/**
+	 * Option name for plugin settings.
+	 *
+	 * @var string
+	 */
+	const SETTINGS_OPTION = 'fut_settings';
+
+	/**
+	 * Option name for tracked forced translations.
+	 *
+	 * @var string
+	 */
+	const FORCED_OPTION = 'fut_forced_translations';
+
+	/**
 	 * Admin notices array.
 	 *
 	 * @var array
@@ -35,6 +49,215 @@ class Force_Update_Translations {
 		include_once __DIR__ . '/lib/glotpress/locales.php';
 		include_once __DIR__ . '/inc/plugins.php';
 		include_once __DIR__ . '/inc/themes.php';
+		include_once __DIR__ . '/inc/settings.php';
+
+		add_filter( 'site_transient_update_plugins', array( $this, 'filter_translation_updates' ) );
+		add_filter( 'site_transient_update_themes', array( $this, 'filter_translation_updates' ) );
+		add_filter( 'site_transient_update_core', array( $this, 'filter_translation_updates' ) );
+		add_filter( 'auto_update_translation', array( $this, 'filter_auto_update_translation' ), 10, 2 );
+	}
+
+	/**
+	 * Default settings.
+	 *
+	 * @return array
+	 */
+	public static function default_settings() {
+		return array(
+			'locale_source'      => 'user',
+			'protect_from_packs' => 1,
+		);
+	}
+
+	/**
+	 * Get plugin settings merged with defaults.
+	 *
+	 * @return array
+	 */
+	public function get_settings() {
+		$settings = get_option( self::SETTINGS_OPTION, array() );
+		if ( ! is_array( $settings ) ) {
+			$settings = array();
+		}
+		return array_merge( self::default_settings(), $settings );
+	}
+
+	/**
+	 * Locale used for downloads and installed-branch detection.
+	 *
+	 * @return string
+	 */
+	public function get_target_locale() {
+		$settings = $this->get_settings();
+		if ( isset( $settings['locale_source'] ) && 'site' === $settings['locale_source'] ) {
+			return get_locale();
+		}
+		return get_user_locale();
+	}
+
+	/**
+	 * Whether official language-pack updates should skip forced translations.
+	 *
+	 * @return bool
+	 */
+	public function should_protect_from_packs() {
+		$settings = $this->get_settings();
+		return ! empty( $settings['protect_from_packs'] );
+	}
+
+	/**
+	 * Build storage key for a forced translation.
+	 *
+	 * @param string $type   plugin|theme.
+	 * @param string $slug   Project slug.
+	 * @param string $locale Locale.
+	 * @return string
+	 */
+	public function get_forced_key( $type, $slug, $locale ) {
+		return $type . '/' . $slug . '/' . $locale;
+	}
+
+	/**
+	 * Remember a successfully forced translation so language packs do not overwrite it.
+	 *
+	 * @param array  $project Project data.
+	 * @param string $locale  Locale.
+	 * @param string $branch  Branch slug when known.
+	 * @return void
+	 */
+	public function remember_forced_translation( $project, $locale, $branch = '' ) {
+		$type = isset( $project['type'] ) ? $project['type'] : '';
+		$slug = isset( $project['sub_project']['slug'] ) ? $project['sub_project']['slug'] : '';
+		if ( '' === $type || '' === $slug || '' === $locale ) {
+			return;
+		}
+
+		$key    = $this->get_forced_key( $type, $slug, $locale );
+		$forced = get_option( self::FORCED_OPTION, array() );
+		if ( ! is_array( $forced ) ) {
+			$forced = array();
+		}
+
+		$forced[ $key ] = array(
+			'type'      => $type,
+			'slug'      => $slug,
+			'locale'    => $locale,
+			'branch'    => $branch,
+			'updated'   => time(),
+			'protected' => 1,
+		);
+
+		update_option( self::FORCED_OPTION, $forced, false );
+	}
+
+	/**
+	 * Get all tracked forced translations.
+	 *
+	 * @return array
+	 */
+	public function get_forced_translations() {
+		$forced = get_option( self::FORCED_OPTION, array() );
+		return is_array( $forced ) ? $forced : array();
+	}
+
+	/**
+	 * Remove forced-translation tracking entries.
+	 *
+	 * @param string $type Optional type filter.
+	 * @param string $slug Optional slug filter.
+	 * @return int Number of removed entries.
+	 */
+	public function clear_forced_translations( $type = '', $slug = '' ) {
+		$forced = $this->get_forced_translations();
+		$before = count( $forced );
+
+		if ( '' === $type && '' === $slug ) {
+			delete_option( self::FORCED_OPTION );
+			return $before;
+		}
+
+		foreach ( $forced as $key => $entry ) {
+			if ( '' !== $type && ( ! isset( $entry['type'] ) || $entry['type'] !== $type ) ) {
+				continue;
+			}
+			if ( '' !== $slug && ( ! isset( $entry['slug'] ) || $entry['slug'] !== $slug ) ) {
+				continue;
+			}
+			unset( $forced[ $key ] );
+		}
+
+		update_option( self::FORCED_OPTION, $forced, false );
+		return $before - count( $forced );
+	}
+
+	/**
+	 * Strip protected domains from language-pack update payloads.
+	 *
+	 * @param object|mixed $value Transient value.
+	 * @return object|mixed
+	 */
+	public function filter_translation_updates( $value ) {
+		if ( ! $this->should_protect_from_packs() || ! is_object( $value ) || empty( $value->translations ) || ! is_array( $value->translations ) ) {
+			return $value;
+		}
+
+		$forced = $this->get_forced_translations();
+		if ( empty( $forced ) ) {
+			return $value;
+		}
+
+		$value->translations = array_values(
+			array_filter(
+				$value->translations,
+				array( $this, 'is_translation_update_allowed' )
+			)
+		);
+
+		return $value;
+	}
+
+	/**
+	 * Whether a language-pack update entry may proceed.
+	 *
+	 * @param array $update Translation update row.
+	 * @return bool
+	 */
+	public function is_translation_update_allowed( $update ) {
+		if ( ! is_array( $update ) || empty( $update['type'] ) || empty( $update['slug'] ) || empty( $update['language'] ) ) {
+			return true;
+		}
+
+		$key    = $this->get_forced_key( $update['type'], $update['slug'], $update['language'] );
+		$forced = $this->get_forced_translations();
+		return empty( $forced[ $key ] );
+	}
+
+	/**
+	 * Block automatic language-pack updates for forced translations.
+	 *
+	 * @param bool|null $update Whether to update.
+	 * @param object    $item   Translation update item.
+	 * @return bool|null
+	 */
+	public function filter_auto_update_translation( $update, $item ) {
+		if ( ! $this->should_protect_from_packs() || ! is_object( $item ) ) {
+			return $update;
+		}
+
+		$type     = isset( $item->type ) ? $item->type : '';
+		$slug     = isset( $item->slug ) ? $item->slug : '';
+		$language = isset( $item->language ) ? $item->language : '';
+		if ( '' === $type || '' === $slug || '' === $language ) {
+			return $update;
+		}
+
+		$key    = $this->get_forced_key( $type, $slug, $language );
+		$forced = $this->get_forced_translations();
+		if ( ! empty( $forced[ $key ] ) ) {
+			return false;
+		}
+
+		return $update;
 	}
 
 	/**
@@ -46,7 +269,7 @@ class Force_Update_Translations {
 	 */
 	public function get_files( $projects ) {
 		foreach ( $projects as $key => $project ) {
-			$locale  = get_user_locale();
+			$locale  = $this->get_target_locale();
 			$sources = array();
 
 			foreach ( array( 'po', 'mo' ) as $format ) {
@@ -69,6 +292,8 @@ class Force_Update_Translations {
 						'content' => $derived->get_error_message(),
 					);
 				} else {
+					$branch = ! empty( $sources ) ? $sources[0] : ( isset( $project['branch'] ) ? $project['branch'] : '' );
+					$this->remember_forced_translation( $project, $locale, $branch );
 					$this->admin_notices[ $key ][] = array(
 						'status'  => 'success',
 						'content' => $this->get_download_success_message( $project, $sources ),
@@ -99,7 +324,7 @@ class Force_Update_Translations {
 	public function get_file( $project, $locale = '', $format = 'mo' ) {
 
 		if ( empty( $locale ) ) {
-			$locale = get_user_locale();
+			$locale = $this->get_target_locale();
 		}
 
 		$target_path   = '';
@@ -156,7 +381,7 @@ class Force_Update_Translations {
 			$translation_path = WP_LANG_DIR . '/' . $target;
 
 			if ( ! file_exists( pathinfo( $translation_path, PATHINFO_DIRNAME ) ) ) {
-				mkdir( pathinfo( $translation_path, PATHINFO_DIRNAME ), 0777, true );
+				wp_mkdir_p( pathinfo( $translation_path, PATHINFO_DIRNAME ) );
 			}
 
 			file_put_contents( $translation_path, $response['body'] ); // phpcs:ignore
@@ -225,7 +450,7 @@ class Force_Update_Translations {
 	 */
 	public function detect_installed_branch( $type, $slug, $locale = '' ) {
 		if ( empty( $locale ) ) {
-			$locale = get_user_locale();
+			$locale = $this->get_target_locale();
 		}
 
 		$subdir = ( 'theme' === $type ) ? 'themes' : 'plugins';
@@ -437,7 +662,7 @@ class Force_Update_Translations {
 
 		$created = 0;
 		foreach ( $mapping as $source => $entries ) {
-			$jed = $this->build_jed_json( $po, $entries, $source );
+			$jed  = $this->build_jed_json( $po, $entries, $source );
 			$file = $destination_dir . '/' . $base_file_name . '-' . md5( $source ) . '.json';
 			$json = wp_json_encode( $jed );
 			if ( false === $json ) {
@@ -453,9 +678,9 @@ class Force_Update_Translations {
 	/**
 	 * Build a Jed 1.x compatible data structure for script translations.
 	 *
-	 * @param PO                 $po      Parsed PO (for headers).
+	 * @param PO                  $po      Parsed PO (for headers).
 	 * @param Translation_Entry[] $entries Entries for one JS source file.
-	 * @param string             $source  Relative JS source path.
+	 * @param string              $source  Relative JS source path.
 	 * @return array
 	 */
 	protected function build_jed_json( $po, $entries, $source ) {
@@ -500,7 +725,7 @@ class Force_Update_Translations {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		$data = get_plugin_data( __FILE__, false, false );
-		return isset( $data['Version'] ) ? $data['Version'] : '0.6.3';
+		return isset( $data['Version'] ) ? $data['Version'] : '0.6.4';
 	}
 
 	/**

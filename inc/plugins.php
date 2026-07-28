@@ -2,9 +2,11 @@
 /**
  * Force update translations for plugins.
  *
- * @package update-force-translations
- * @author mayukojpn
- * @license GPL-2.0+
+ * @package Force_Update_Translations
+ */
+
+/**
+ * Plugin translation update handler.
  */
 class Plugin_Force_Update_Translations extends Force_Update_Translations {
 	/**
@@ -33,8 +35,8 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			$on_wporg = true;
 		}
 
-		// Add action if plugin is on wordpress.org and if user Locale isn't 'en_US'.
-		if ( ! $on_wporg || get_user_locale() === 'en_US' ) {
+		// Add action if plugin is on wordpress.org and if target locale isn't 'en_US'.
+		if ( ! $on_wporg || $this->get_target_locale() === 'en_US' ) {
 			return $actions;
 		}
 
