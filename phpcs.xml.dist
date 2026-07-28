@@ -1,0 +1,41 @@
+<?xml version="1.0"?>
+<ruleset name="Force Update Translations">
+	<description>WordPress Coding Standards for Force Update Translations.</description>
+
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg name="extensions" value="php"/>
+	<arg value="sp"/>
+
+	<file>.</file>
+
+	<exclude-pattern>/node_modules/</exclude-pattern>
+	<exclude-pattern>/vendor/</exclude-pattern>
+	<exclude-pattern>/lib/glotpress/</exclude-pattern>
+
+	<config name="minimum_supported_wp_version" value="4.7"/>
+
+	<rule ref="WordPress">
+		<!-- Existing plugin layout uses plugins.php / themes.php rather than class-*.php. -->
+		<exclude name="WordPress.Files.FileName"/>
+	</rule>
+
+	<rule ref="WordPress.WP.I18n">
+		<properties>
+			<property name="text_domain" type="array">
+				<element value="force-update-translations"/>
+			</property>
+		</properties>
+	</rule>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="Force_Update_Translations"/>
+				<element value="Plugin_Force_Update_Translations"/>
+				<element value="Theme_Force_Update_Translations"/>
+				<element value="force_update_translations"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>
