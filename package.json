@@ -1,0 +1,19 @@
+{
+	"name": "force-update-translations",
+	"version": "0.6.3",
+	"description": "Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.",
+	"author": "Mayo Moriyama & Contributors",
+	"license": "GPL-2.0-or-later",
+	"scripts": {
+		"plugin-zip": "wp-scripts plugin-zip"
+	},
+	"files": [
+		"force-update-translations.php",
+		"readme.txt",
+		"inc",
+		"lib"
+	],
+	"devDependencies": {
+		"@wordpress/scripts": "^30"
+	}
+}

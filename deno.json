@@ -1,0 +1,15 @@
+{
+	"tasks": {
+		"check": "deno fmt --check deno.json package.json",
+		"build": "deno task plugin-zip",
+		"plugin-zip": "deno x wp-scripts plugin-zip && zip -d force-update-translations.zip force-update-translations/package.json force-update-translations/README.md"
+	},
+	"nodeModulesDir": "auto",
+	"fmt": {
+		"indentWidth": 4,
+		"useTabs": true,
+		"lineWidth": 400,
+		"include": ["deno.json", "package.json"],
+		"exclude": ["node_modules", ".github"]
+	}
+}
