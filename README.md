@@ -72,3 +72,12 @@ To download the translation files for a plugin:
 = 0.2 =
 * Export only Current/Waiting/Fuzzy translations. props @naokomc
 * Capitalize plugin name.
+
+## Development
+
+```bash
+deno task readme      # Generate readme.txt from README.md (wp-readme)
+deno task plugin-zip  # Build installable plugin ZIP
+```
+
+Tag pushes create a GitHub Release with the plugin ZIP attached. WordPress.org SVN deploy is not used in this fork workflow.

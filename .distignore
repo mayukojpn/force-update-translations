@@ -1,6 +1,10 @@
 /.wordpress-org
 /.git
 /.github
+/tools
 .distignore
 .gitignore
 README.md
+deno.json
+deno.lock
+*.zip
