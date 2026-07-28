@@ -1,0 +1,39 @@
+name: Release plugin zip
+on:
+  push:
+    tags:
+      - "*"
+permissions:
+  contents: write
+jobs:
+  zip:
+    name: Build and attach zip
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Generate readme.txt from README.md
+        run: deno task readme
+
+      - name: Build plugin zip
+        run: deno task plugin-zip
+
+      - name: Verify zip
+        run: test -f force-update-translations.zip && ls -la force-update-translations.zip
+
+      - name: Create or update GitHub Release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          TAG="${{ github.ref_name }}"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" force-update-translations.zip --clobber
+          else
+            gh release create "$TAG" force-update-translations.zip --generate-notes --title "$TAG"
+          fi

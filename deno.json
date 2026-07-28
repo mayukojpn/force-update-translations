@@ -1,0 +1,33 @@
+{
+	"plugin": {
+		"slug": "force-update-translations",
+		"zip": "force-update-translations.zip",
+		"files": [
+			"force-update-translations.php",
+			"readme.txt",
+			"inc",
+			"lib"
+		]
+	},
+	"tasks": {
+		"check": "deno fmt --check deno.json tools && deno lint tools",
+		"readme": "deno run --allow-read --allow-write --allow-env @pixelium/wp-readme",
+		"build": "deno task readme && deno task plugin-zip",
+		"plugin-zip": "deno run --allow-read --allow-write --allow-env --allow-run=zip tools/plugin_zip.ts"
+	},
+	"fmt": {
+		"indentWidth": 4,
+		"useTabs": true,
+		"lineWidth": 400,
+		"include": ["deno.json", "tools"],
+		"exclude": [".github"]
+	},
+	"lint": {
+		"rules": {
+			"tags": ["recommended"]
+		}
+	},
+	"imports": {
+		"@pixelium/wp-readme": "jsr:@pixelium/wp-readme@^2.0.5"
+	}
+}
