@@ -119,11 +119,13 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
 
-		$projects[ $plugin_file ] = array(
-			'type'        => 'plugin',
-			'sub_project' => array(
-				'slug' => $plugin_slug[1],
-				'name' => $plugin_data['Name'],
+		$projects = array(
+			$plugin_file => array(
+				'type'        => 'plugin',
+				'sub_project' => array(
+					'slug' => $plugin_slug[1],
+					'name' => $plugin_data['Name'],
+				),
 			),
 		);
 
