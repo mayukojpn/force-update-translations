@@ -4,7 +4,7 @@
  * Description: Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
  * Author:      Mayo Moriyama & Contributors
  * Author URI:  https://github.com/mayukojpn/force-update-translations/graphs/contributors
- * Version:     0.6.2
+ * Version:     0.6.3
  * Requires at least: 4.7
  * Requires PHP: 5.6
  * Text Domain: force-update-translations
@@ -46,7 +46,8 @@ class Force_Update_Translations {
 	 */
 	public function get_files( $projects ) {
 		foreach ( $projects as $key => $project ) {
-			$locale = get_user_locale();
+			$locale  = get_user_locale();
+			$sources = array();
 
 			foreach ( array( 'po', 'mo' ) as $format ) {
 				$file = $this->get_file( $project, $locale, $format );
@@ -55,6 +56,8 @@ class Force_Update_Translations {
 						'status'  => 'error',
 						'content' => $file->get_error_message(),
 					);
+				} elseif ( is_string( $file ) && '' !== $file ) {
+					$sources[] = $file;
 				}
 			}
 
@@ -68,11 +71,7 @@ class Force_Update_Translations {
 				} else {
 					$this->admin_notices[ $key ][] = array(
 						'status'  => 'success',
-						'content' => sprintf(
-							/* translators: %s: Translation file. */
-							__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
-							'<b>' . esc_html( $project['sub_project']['name'] ) . '</b>'
-						),
+						'content' => $this->get_download_success_message( $project, $sources ),
 					);
 				}
 			}
@@ -95,7 +94,7 @@ class Force_Update_Translations {
 	 * @param string $locale  File locale.
 	 * @param string $format  File format.
 	 *
-	 * @return null|WP_Error File path to get source.
+	 * @return string|WP_Error Project branch used (`dev`, `stable`, or empty string for themes) on success.
 	 */
 	public function get_file( $project, $locale = '', $format = 'mo' ) {
 
@@ -108,12 +107,17 @@ class Force_Update_Translations {
 
 		switch ( $project['type'] ) {
 			case 'plugin':
-				$target_path   = 'plugins/' . $project['sub_project']['slug'];
-				// Development first (includes newest / waiting strings), then Stable.
-				$project_paths = array(
-					'wp-' . $target_path . '/dev',
-					'wp-' . $target_path . '/stable',
-				);
+				$target_path = 'plugins/' . $project['sub_project']['slug'];
+				$branch      = isset( $project['branch'] ) ? $project['branch'] : '';
+				if ( 'stable' === $branch || 'dev' === $branch ) {
+					$project_paths = array( 'wp-' . $target_path . '/' . $branch );
+				} else {
+					// Development first (includes newest / waiting strings), then Stable.
+					$project_paths = array(
+						'wp-' . $target_path . '/dev',
+						'wp-' . $target_path . '/stable',
+					);
+				}
 				break;
 			case 'theme':
 				$target_path   = 'themes/' . $project['sub_project']['slug'];
@@ -156,7 +160,7 @@ class Force_Update_Translations {
 			}
 
 			file_put_contents( $translation_path, $response['body'] ); // phpcs:ignore
-			return null;
+			return $this->get_project_branch( $project_path );
 		}
 
 		return new WP_Error(
@@ -166,6 +170,117 @@ class Force_Update_Translations {
 				__( 'Cannot get source file: %s', 'force-update-translations' ),
 				'<b>' . esc_html( $last_source ) . '</b>'
 			)
+		);
+	}
+
+	/**
+	 * Extract Stable/Development branch from a translate.wordpress.org project path.
+	 *
+	 * @param string $project_path Project path such as wp-plugins/slug/dev.
+	 * @return string `dev`, `stable`, or empty string when not applicable.
+	 */
+	protected function get_project_branch( $project_path ) {
+		if ( preg_match( '#/(dev|stable)$#', $project_path, $matches ) ) {
+			return $matches[1];
+		}
+
+		return '';
+	}
+
+	/**
+	 * Detect Stable/Development branch from a local PO file header.
+	 *
+	 * @param string $po_path Path to PO file.
+	 * @return string `dev`, `stable`, or empty string when unknown.
+	 */
+	public function detect_branch_from_po( $po_path ) {
+		if ( ! is_readable( $po_path ) ) {
+			return '';
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents
+		$headers = file_get_contents( $po_path, false, null, 0, 4096 );
+		if ( false === $headers ) {
+			return '';
+		}
+
+		if ( preg_match( '/Project-Id-Version:.*\bDevelopment\b/i', $headers ) ) {
+			return 'dev';
+		}
+
+		if ( preg_match( '/Project-Id-Version:.*\bStable\b/i', $headers ) ) {
+			return 'stable';
+		}
+
+		return '';
+	}
+
+	/**
+	 * Detect branch for an installed plugin or theme translation.
+	 *
+	 * @param string $type `plugin` or `theme`.
+	 * @param string $slug Text domain / slug.
+	 * @param string $locale Locale. Defaults to the current user locale.
+	 * @return string `dev`, `stable`, or empty string when unknown.
+	 */
+	public function detect_installed_branch( $type, $slug, $locale = '' ) {
+		if ( empty( $locale ) ) {
+			$locale = get_user_locale();
+		}
+
+		$subdir = ( 'theme' === $type ) ? 'themes' : 'plugins';
+		$po     = WP_LANG_DIR . '/' . $subdir . '/' . $slug . '-' . $locale . '.po';
+
+		return $this->detect_branch_from_po( $po );
+	}
+
+	/**
+	 * Human-readable label for a GlotPress project branch.
+	 *
+	 * @param string $branch Branch slug (`dev` or `stable`).
+	 * @return string
+	 */
+	protected function get_branch_label( $branch ) {
+		switch ( $branch ) {
+			case 'dev':
+				return __( 'Development', 'force-update-translations' );
+			case 'stable':
+				return __( 'Stable', 'force-update-translations' );
+			default:
+				return $branch;
+		}
+	}
+
+	/**
+	 * Build the success notice after translation files are downloaded.
+	 *
+	 * @param array    $project Project data.
+	 * @param string[] $sources Branch slugs used for downloads.
+	 * @return string
+	 */
+	protected function get_download_success_message( $project, $sources ) {
+		$name    = '<b>' . esc_html( $project['sub_project']['name'] ) . '</b>';
+		$sources = array_values( array_unique( array_filter( $sources ) ) );
+
+		if ( empty( $sources ) ) {
+			return sprintf(
+				/* translators: %s: Theme or plugin name. */
+				__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
+				$name
+			);
+		}
+
+		$labels = array();
+		foreach ( $sources as $source ) {
+			$labels[] = $this->get_branch_label( $source );
+		}
+		$branch_label = '<b>' . esc_html( implode( ', ', $labels ) ) . '</b>';
+
+		return sprintf(
+			/* translators: 1: Theme or plugin name. 2: Translation project branch (Development or Stable). */
+			__( 'Translation files have been downloaded: %1$s (source: %2$s)', 'force-update-translations' ),
+			$name,
+			$branch_label
 		);
 	}
 
@@ -385,7 +500,7 @@ class Force_Update_Translations {
 			require_once ABSPATH . 'wp-admin/includes/plugin.php';
 		}
 		$data = get_plugin_data( __FILE__, false, false );
-		return isset( $data['Version'] ) ? $data['Version'] : '0.6.2';
+		return isset( $data['Version'] ) ? $data['Version'] : '0.6.3';
 	}
 
 	/**

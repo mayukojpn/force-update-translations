@@ -26,6 +26,10 @@ To download the translation files for a plugin:
 
 ## Changelog
 
+= 0.6.3 - 2026-07-28 =
+* Feature: Choose Stable or Development as the translation source when updating plugin translations
+* Feature: Show whether installed plugin translations came from Stable or Development
+
 = 0.6.0 - 2025-12-17 =
 * Security: Fixed CSRF vulnerability (CVE-2025-58236)
 * Security: Added nonce verification and permission checks for translation updates

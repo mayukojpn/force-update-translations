@@ -26,19 +26,6 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 	 * @return array Modified array of plugin action links.
 	 */
 	public function plugin_action_links( $actions, $plugin_file ) {
-		$url         = wp_nonce_url(
-			admin_url( 'plugins.php?force_translate=' . $plugin_file ),
-			'force_translate_plugin_' . $plugin_file,
-			'force_translate_nonce'
-		);
-		$new_actions = array(
-			'force_translate' => sprintf(
-				'<a href="%1$s">%2$s</a>',
-				esc_url( $url ),
-				esc_html__( 'Update translation', 'force-update-translations' )
-			),
-		);
-
 		// Check if plugin is on wordpress.org by checking if ID (from Plugin wp.org info) exists in 'response' or 'no_update'.
 		$on_wporg     = false;
 		$plugin_state = get_site_transient( 'update_plugins' );
@@ -47,9 +34,51 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 		}
 
 		// Add action if plugin is on wordpress.org and if user Locale isn't 'en_US'.
-		if ( ( $on_wporg ) && ( get_user_locale() !== 'en_US' ) ) {
-			$actions = array_merge( $actions, $new_actions );
+		if ( ! $on_wporg || get_user_locale() === 'en_US' ) {
+			return $actions;
 		}
+
+		$installed_branch = '';
+		if ( preg_match( '/^([a-zA-Z0-9-_]+)\//', $plugin_file, $plugin_slug ) ) {
+			$installed_branch = $this->detect_installed_branch( 'plugin', $plugin_slug[1] );
+		}
+
+		$branch_links = array();
+		foreach ( array( 'stable', 'dev' ) as $branch ) {
+			$url   = wp_nonce_url(
+				admin_url(
+					add_query_arg(
+						array(
+							'force_translate'        => $plugin_file,
+							'force_translate_branch' => $branch,
+						),
+						'plugins.php'
+					)
+				),
+				'force_translate_plugin_' . $plugin_file . '_' . $branch,
+				'force_translate_nonce'
+			);
+			$label = $this->get_branch_label( $branch );
+			if ( $branch === $installed_branch ) {
+				$label = sprintf(
+					/* translators: %s: Translation project branch (Development or Stable). */
+					__( '%s (current)', 'force-update-translations' ),
+					$label
+				);
+			}
+			$branch_links[] = sprintf(
+				'<a href="%1$s">%2$s</a>',
+				esc_url( $url ),
+				esc_html( $label )
+			);
+		}
+
+		$actions['force_translate'] = sprintf(
+			'%1$s: %2$s',
+			esc_html__( 'Update translation', 'force-update-translations' ),
+			implode( ' | ', $branch_links )
+		);
+
 		return $actions;
 	}
 
@@ -65,10 +94,20 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 		}
 
 		$plugin_file = sanitize_text_field( wp_unslash( $_GET['force_translate'] ) );
+		$branch      = isset( $_GET['force_translate_branch'] ) ? sanitize_key( wp_unslash( $_GET['force_translate_branch'] ) ) : '';
+
+		if ( ! in_array( $branch, array( 'stable', 'dev' ), true ) ) {
+			$this->admin_notices['error'][] = array(
+				'status'  => 'error',
+				'content' => esc_html__( 'Please choose Stable or Development as the translation source.', 'force-update-translations' ),
+			);
+			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
+			return;
+		}
 
 		// Verify nonce for CSRF protection.
 		if ( ! isset( $_GET['force_translate_nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['force_translate_nonce'] ) ), 'force_translate_plugin_' . $plugin_file ) ) {
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['force_translate_nonce'] ) ), 'force_translate_plugin_' . $plugin_file . '_' . $branch ) ) {
 			$this->admin_notices['error'][] = array(
 				'status'  => 'error',
 				'content' => esc_html__( 'Security verification failed. Please refresh the page and try again.', 'force-update-translations' ),
@@ -122,6 +161,7 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 		$projects = array(
 			$plugin_file => array(
 				'type'        => 'plugin',
+				'branch'      => $branch,
 				'sub_project' => array(
 					'slug' => $plugin_slug[1],
 					'name' => $plugin_data['Name'],
