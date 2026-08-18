@@ -4,3 +4,9 @@
 .distignore
 .gitignore
 README.md
+/vendor
+composer.json
+composer.lock
+phpcs.xml.dist
+deno.json
+*.zip
