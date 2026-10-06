@@ -4,10 +4,6 @@
 
 Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
-> **Warning**: Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
-
-> **Warning**: Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
-
 ## Usage
 
 ### Theme translation
@@ -22,9 +18,26 @@ Finally, updating theme translation files is now supported! To download the tran
 To download the translation files for a plugin:
 
 1. Visit 'Plugins' in WordPress menu.
-1. Click 'Update translation' under the name of the plugin for which you want to get the translation files.
+1. Click 'Update translation' under the name of the plugin for which you want to get the translation files. Translations are fetched from the Stable project, falling back to Development. Use the arrow next to the link to pick one explicitly.
 
 ## Changelog
+
+= 1.0.0 - 2026-10-07 =
+* Feature: Generate JSON files so JavaScript translations are applied (fixes #24)
+* Feature: Generate `.l10n.php` files on WordPress 6.5 and later (performant translations)
+* Feature: Plugin translations are fetched from the Stable project, falling back to Development; either can be chosen explicitly (fixes #37)
+* Feature: The success notice shows which project the translation came from
+* Improvement: The translation file cache is invalidated after download
+* Improvement: Admin notices are shown reliably after a plugin translation update
+* Update: Requires at least WordPress 5.0
+* Credits: Stable/Development source selection and JSON / `.l10n.php` generation by @hiroshisatoy
+
+= 0.6.2 - 2025-12-22 =
+* Fix: Added plugin headers required for WordPress.org language pack compatibility
+
+= 0.6.1 - 2025-12-22 =
+* Update: Lowered PHP requirement to 5.6 to maximize the reach of the security update
+* Update: Readme and translator comment corrections
 
 = 0.6.0 - 2025-12-17 =
 * Security: Fixed CSRF vulnerability (CVE-2025-58236)
