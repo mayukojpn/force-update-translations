@@ -166,9 +166,7 @@ class Force_Update_Translations {
 
 			$translation_path = WP_LANG_DIR . '/' . $target;
 
-			if ( ! file_exists( pathinfo( $translation_path, PATHINFO_DIRNAME ) ) ) {
-				mkdir( pathinfo( $translation_path, PATHINFO_DIRNAME ), 0777, true );
-			}
+			wp_mkdir_p( dirname( $translation_path ) );
 
 			file_put_contents( $translation_path, $response['body'] ); // phpcs:ignore
 			return ( 'plugin' === $project['type'] ) ? basename( $project_path ) : '';
@@ -343,7 +341,7 @@ class Force_Update_Translations {
 
 		$created = 0;
 		foreach ( $mapping as $source => $entries ) {
-			$jed = $this->build_jed_json( $po, $entries, $source );
+			$jed  = $this->build_jed_json( $po, $entries, $source );
 			$file = $destination_dir . '/' . $base_file_name . '-' . md5( $source ) . '.json';
 			$json = wp_json_encode( $jed );
 			if ( false === $json ) {
@@ -359,9 +357,9 @@ class Force_Update_Translations {
 	/**
 	 * Build a Jed 1.x compatible data structure for script translations.
 	 *
-	 * @param PO                 $po      Parsed PO (for headers).
+	 * @param PO                  $po      Parsed PO (for headers).
 	 * @param Translation_Entry[] $entries Entries for one JS source file.
-	 * @param string             $source  Relative JS source path.
+	 * @param string              $source  Relative JS source path.
 	 * @return array
 	 */
 	protected function build_jed_json( $po, $entries, $source ) {
