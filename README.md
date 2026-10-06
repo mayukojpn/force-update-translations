@@ -85,3 +85,11 @@ To download the translation files for a plugin:
 = 0.2 =
 * Export only Current/Waiting/Fuzzy translations. props @naokomc
 * Capitalize plugin name.
+
+## Development
+
+```bash
+composer install
+composer format    # phpcbf (WordPress Coding Standards)
+composer lint      # phpcs
+```
