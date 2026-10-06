@@ -1,10 +1,10 @@
 === Force Update Translations ===
-Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke, miyauchi, nekojonez, rocketmartue
+Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke, miyauchi, nekojonez, rocketmartue, hiroshisato
 Tags: translation
-Requires at least: 4.7
-Tested up to: 6.9
+Requires at least: 5.0
+Tested up to: 7.1
 Requires PHP: 5.6
-Stable tag: 0.6.3
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -16,10 +16,6 @@ Apply WordPress.org theme and plugin translations to a site even if translations
 
 **Note about Translation Playground:**
 The [Translation Playground](https://make.wordpress.org/polyglots/2023/04/19/wp-translation-playground/) is now available for quick translation testing. However, if you need to test translations on your actual site, this plugin may remain the practical solution.
-
-⚠️ Warning ⚠️ Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
-
-⚠️ Warning ⚠️ Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
 
 == Theme translation ==
 
@@ -45,6 +41,9 @@ To download the translation files for a plugin:
 To read the changelog for the latest the plugin release, please navigate to the <a href="https://github.com/mayukojpn/force-update-translations#changelog">GitHub</a>.
 
 == Upgrade Notice ==
+
+= 1.0.0 =
+* JavaScript translations (JSON) and WordPress 6.5+ `.l10n.php` files are now generated. Plugin translations come from Stable with a Development fallback.
 
 = 0.6.0 =
 * Security fix for CVE-2025-58236. Update recommended.
