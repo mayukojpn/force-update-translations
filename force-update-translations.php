@@ -247,10 +247,13 @@ class Force_Update_Translations {
 			return $json_result;
 		}
 
-		if ( is_readable( $mo ) && class_exists( 'WP_Translation_File', false ) ) {
-			$php = WP_Translation_File::transform( $mo, 'php' );
+		if ( class_exists( 'WP_Translation_File', false ) ) {
+			$php = is_readable( $mo ) ? WP_Translation_File::transform( $mo, 'php' ) : false;
 			if ( is_string( $php ) && '' !== $php ) {
 				file_put_contents( $base . '.l10n.php', $php ); // phpcs:ignore
+			} elseif ( file_exists( $base . '.l10n.php' ) ) {
+				// WP 6.5+ loads .l10n.php in preference to .mo; a stale one would shadow the fresh download.
+				unlink( $base . '.l10n.php' ); // phpcs:ignore
 			}
 		}
 
