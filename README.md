@@ -90,6 +90,6 @@ To download the translation files for a plugin:
 
 ```bash
 composer install
-deno task format   # phpcbf (WordPress Coding Standards)
-deno task lint     # phpcs
+composer format    # phpcbf (WordPress Coding Standards)
+composer lint      # phpcs
 ```

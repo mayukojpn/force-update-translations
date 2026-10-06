@@ -13,7 +13,7 @@
 	<exclude-pattern>/vendor/</exclude-pattern>
 	<exclude-pattern>/lib/glotpress/</exclude-pattern>
 
-	<config name="minimum_supported_wp_version" value="4.7"/>
+	<config name="minimum_supported_wp_version" value="5.0"/>
 
 	<rule ref="WordPress">
 		<!-- Existing plugin layout uses plugins.php / themes.php rather than class-*.php. -->

@@ -8,5 +8,4 @@ README.md
 composer.json
 composer.lock
 phpcs.xml.dist
-deno.json
 *.zip
