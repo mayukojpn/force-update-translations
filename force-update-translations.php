@@ -257,6 +257,9 @@ class Force_Update_Translations {
 			}
 		}
 
+		// WP_Textdomain_Registry caches the language directory listing for an hour (WP 6.5+).
+		wp_cache_delete( md5( WP_LANG_DIR . '/' . $subdir . '/' ), 'translation_files' );
+
 		return true;
 	}
 
