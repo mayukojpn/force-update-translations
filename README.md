@@ -18,13 +18,25 @@ Finally, updating theme translation files is now supported! To download the tran
 To download the translation files for a plugin:
 
 1. Visit 'Plugins' in WordPress menu.
-1. Click 'Update translation' under the name of the plugin for which you want to get the translation files.
+1. Click 'Update translation' under the name of the plugin for which you want to get the translation files. Translations are fetched from the Stable project, falling back to Development. Use the arrow next to the link to pick one explicitly.
 
 ## Changelog
 
-= 0.6.3 - 2026-07-28 =
-* Feature: Choose Stable or Development as the translation source when updating plugin translations
-* Feature: Show whether installed plugin translations came from Stable or Development
+= 1.0.0 - 2026-10-07 =
+* Feature: Generate JSON files so JavaScript translations are applied (fixes #24)
+* Feature: Generate `.l10n.php` files on WordPress 6.5 and later (performant translations)
+* Feature: Plugin translations are fetched from the Stable project, falling back to Development; either can be chosen explicitly (fixes #37)
+* Feature: The success notice shows which project the translation came from
+* Improvement: The translation file cache is invalidated after download
+* Improvement: Admin notices are shown reliably after a plugin translation update
+* Update: Requires at least WordPress 5.0
+
+= 0.6.2 - 2025-12-22 =
+* Fix: Added plugin headers required for WordPress.org language pack compatibility
+
+= 0.6.1 - 2025-12-22 =
+* Update: Lowered PHP requirement to 5.6 to maximize the reach of the security update
+* Update: Readme and translator comment corrections
 
 = 0.6.0 - 2025-12-17 =
 * Security: Fixed CSRF vulnerability (CVE-2025-58236)

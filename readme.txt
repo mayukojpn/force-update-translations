@@ -1,10 +1,10 @@
 === Force Update Translations ===
 Contributors: mayukojpn, nao, dartui, pedromendonca, casiepa, mekemoke, miyauchi, nekojonez, rocketmartue
 Tags: translation
-Requires at least: 4.7
-Tested up to: 6.9
+Requires at least: 5.0
+Tested up to: 7.1
 Requires PHP: 5.6
-Stable tag: 0.6.3
+Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,6 +41,9 @@ To download the translation files for a plugin:
 To read the changelog for the latest the plugin release, please navigate to the <a href="https://github.com/mayukojpn/force-update-translations#changelog">GitHub</a>.
 
 == Upgrade Notice ==
+
+= 1.0.0 =
+* JavaScript translations (JSON) and WordPress 6.5+ `.l10n.php` files are now generated. Plugin translations come from Stable with a Development fallback.
 
 = 0.6.0 =
 * Security fix for CVE-2025-58236. Update recommended.
