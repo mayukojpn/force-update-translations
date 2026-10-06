@@ -14,6 +14,7 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 		add_action( 'plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
 		add_action( 'network_admin_plugin_action_links', array( $this, 'plugin_action_links' ), 10, 2 );
 		add_action( 'admin_init', array( $this, 'handle_translation_update' ) );
+		add_action( 'admin_print_footer_scripts-plugins.php', array( $this, 'admin_footer' ) );
 	}
 
 
@@ -38,48 +39,80 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			return $actions;
 		}
 
-		$installed_branch = '';
-		if ( preg_match( '/^([a-zA-Z0-9-_]+)\//', $plugin_file, $plugin_slug ) ) {
-			$installed_branch = $this->detect_installed_branch( 'plugin', $plugin_slug[1] );
-		}
-
-		$branch_links = array();
-		foreach ( array( 'stable', 'dev' ) as $branch ) {
-			$url   = wp_nonce_url(
-				admin_url(
-					add_query_arg(
-						array(
-							'force_translate'        => $plugin_file,
-							'force_translate_branch' => $branch,
-						),
-						'plugins.php'
-					)
-				),
-				'force_translate_plugin_' . $plugin_file . '_' . $branch,
-				'force_translate_nonce'
-			);
-			$label = $this->get_branch_label( $branch );
-			if ( $branch === $installed_branch ) {
-				$label = sprintf(
-					/* translators: %s: Translation project branch (Development or Stable). */
-					__( '%s (current)', 'force-update-translations' ),
-					$label
-				);
-			}
-			$branch_links[] = sprintf(
-				'<a href="%1$s">%2$s</a>',
-				esc_url( $url ),
-				esc_html( $label )
-			);
-		}
-
+		// "Update translation" picks the source automatically (Stable, then Development).
+		// The arrow opens a small dropdown with explicit Stable / Development links
+		// (GlotPress project names are English-only, so deliberately not translated).
+		// WordPress wraps this in <span class="force_translate">, which anchors the dropdown.
 		$actions['force_translate'] = sprintf(
-			'%1$s: %2$s',
-			esc_html__( 'Update translation', 'force-update-translations' ),
-			implode( ' | ', $branch_links )
+			'%1$s<button type="button" class="button-link fut-source-toggle" aria-expanded="false" aria-label="%2$s"></button><span class="fut-source-menu">%3$s%4$s</span>',
+			$this->translate_link( $plugin_file, '', __( 'Update translation', 'force-update-translations' ) ),
+			esc_attr__( 'Choose translation source', 'force-update-translations' ),
+			$this->translate_link( $plugin_file, 'stable', 'Stable' ),
+			$this->translate_link( $plugin_file, 'dev', 'Development' )
 		);
 
 		return $actions;
+	}
+
+	/**
+	 * Dropdown behaviour and styles for the source chooser in plugin row actions.
+	 *
+	 * Opens on hover over the plus icon (hover devices) or on tap of it (touch devices).
+	 */
+	public function admin_footer() {
+		?>
+		<style>
+			/* nowrap keeps the icon on the same line as the label, whatever the label length in the locale. */
+			.row-actions .force_translate { position: relative; white-space: nowrap; }
+			/* Chevron via ::before; core styles .dashicons inside .plugin-title as 64px plugin icons. Black, not link blue: it is a toggle, not a link. */
+			.row-actions .fut-source-toggle { vertical-align: middle; margin-left: 2px; }
+			.row-actions .fut-source-toggle,
+			.row-actions .fut-source-toggle:hover,
+			.row-actions .fut-source-toggle:focus { color: #000; }
+			.row-actions .fut-source-toggle::before { font: normal 12px/1 dashicons; content: "\f347"; }
+			.row-actions .is-open .fut-source-toggle::before { content: "\f343"; }
+			.row-actions .fut-source-menu { display: none; position: absolute; top: 100%; left: 0; z-index: 2; margin-top: 4px; padding: 4px 0; min-width: 10em; background: #fff; border: 1px solid #c3c4c7; box-shadow: 0 2px 6px rgba( 0, 0, 0, 0.12 ); }
+			/* Bridge the gap above the menu so moving the pointer from the icon keeps it open. */
+			.row-actions .fut-source-menu::before { content: ""; position: absolute; top: -5px; left: 0; right: 0; height: 5px; }
+			.row-actions .fut-source-menu a { display: block; padding: 6px 12px; white-space: nowrap; }
+			.row-actions .fut-source-menu a:hover,
+			.row-actions .fut-source-menu a:focus { background: #f0f0f1; }
+			.row-actions .is-open .fut-source-menu { display: block; }
+			/* Hover devices: hover (or keyboard focus) opens the menu; the icon is not clickable. */
+			@media (hover: hover) {
+				.row-actions .fut-source-toggle { cursor: default; }
+				.row-actions .fut-source-toggle:focus:not(:focus-visible) { box-shadow: none; outline: 0; }
+				.row-actions .fut-source-toggle:hover + .fut-source-menu,
+				.row-actions .fut-source-toggle:focus-visible + .fut-source-menu,
+				.row-actions .fut-source-menu:hover,
+				.row-actions .fut-source-menu:focus-within { display: block; }
+			}
+			@media screen and (max-width: 782px) {
+				/* Core gives row-action links/button-links `padding: 4px 16px 4px 0` here. Drop the link's right padding so the arrow hugs the text, and align tops. */
+				.row-actions .force_translate > a:first-child { padding-right: 0; }
+				.row-actions .fut-source-toggle { vertical-align: top; }
+			}
+		</style>
+		<script>
+			// Touch devices only; where hover works, the menu is CSS-only.
+			document.addEventListener( 'click', function ( e ) {
+				if ( window.matchMedia( '(hover: hover)' ).matches ) {
+					return;
+				}
+				var toggle = e.target.closest( '.fut-source-toggle' );
+				document.querySelectorAll( '.force_translate.is-open' ).forEach( function ( open ) {
+					if ( ! toggle || open !== toggle.parentNode ) {
+						open.classList.remove( 'is-open' );
+						open.querySelector( '.fut-source-toggle' ).setAttribute( 'aria-expanded', 'false' );
+					}
+				} );
+				if ( toggle ) {
+					var isOpen = toggle.parentNode.classList.toggle( 'is-open' );
+					toggle.setAttribute( 'aria-expanded', String( isOpen ) );
+				}
+			} );
+		</script>
+		<?php
 	}
 
 
@@ -95,19 +128,13 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 
 		$plugin_file = sanitize_text_field( wp_unslash( $_GET['force_translate'] ) );
 		$branch      = isset( $_GET['force_translate_branch'] ) ? sanitize_key( wp_unslash( $_GET['force_translate_branch'] ) ) : '';
-
 		if ( ! in_array( $branch, array( 'stable', 'dev' ), true ) ) {
-			$this->admin_notices['error'][] = array(
-				'status'  => 'error',
-				'content' => esc_html__( 'Please choose Stable or Development as the translation source.', 'force-update-translations' ),
-			);
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-			return;
+			$branch = ''; // Automatic: Stable first, then Development.
 		}
 
 		// Verify nonce for CSRF protection.
 		if ( ! isset( $_GET['force_translate_nonce'] ) ||
-			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['force_translate_nonce'] ) ), 'force_translate_plugin_' . $plugin_file . '_' . $branch ) ) {
+			! wp_verify_nonce( sanitize_text_field( wp_unslash( $_GET['force_translate_nonce'] ) ), 'force_translate_plugin_' . $plugin_file ) ) {
 			$this->admin_notices['error'][] = array(
 				'status'  => 'error',
 				'content' => esc_html__( 'Security verification failed. Please refresh the page and try again.', 'force-update-translations' ),
