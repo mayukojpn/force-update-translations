@@ -30,6 +30,7 @@ To download the translation files for a plugin:
 * Improvement: The translation file cache is invalidated after download
 * Improvement: Admin notices are shown reliably after a plugin translation update
 * Update: Requires at least WordPress 5.0
+* Credits: Stable/Development source selection and JSON / `.l10n.php` generation by @hiroshisatoy
 
 = 0.6.2 - 2025-12-22 =
 * Fix: Added plugin headers required for WordPress.org language pack compatibility
