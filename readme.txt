@@ -17,10 +17,6 @@ Apply WordPress.org theme and plugin translations to a site even if translations
 **Note about Translation Playground:**
 The [Translation Playground](https://make.wordpress.org/polyglots/2023/04/19/wp-translation-playground/) is now available for quick translation testing. However, if you need to test translations on your actual site, this plugin may remain the practical solution.
 
-⚠️ Warning ⚠️ Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
-
-⚠️ Warning ⚠️ Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
-
 == Theme translation ==
 
 To download the translation files for a theme:

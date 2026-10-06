@@ -4,10 +4,6 @@
 
 Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
 
-> **Warning**: Currently this plugin downloads only strings from Development project instead of Stable for plugins. Please wait for an update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/37">the issue on GitHub</a>.
-
-> **Warning**: Currently this plugin is not able to generate the JSON files that is needed for JavaScript to consume some translations. Please wait for update or see <a href="https://github.com/mayukojpn/force-update-translations/issues/24">the issue on GitHub</a>.
-
 ## Usage
 
 ### Theme translation
