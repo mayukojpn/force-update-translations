@@ -19,14 +19,6 @@
 	},
 	"steps": [
 		{
-			"step": "setSiteLanguage",
-			"language": "ja",
-			"progress": {
-				"weight": 1,
-				"caption": "Switching the site language to Japanese"
-			}
-		},
-		{
 			"step": "installPlugin",
 			"pluginData": {
 				"resource": "wordpress.org/plugins",
