@@ -1,0 +1,71 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"landingPage": "/wp-admin/plugins.php",
+	"meta": {
+		"title": "Force Update Translations",
+		"author": "mayukojpn",
+		"description": "Installs Force Update Translations, switches the site language to Japanese, and opens the Plugins screen with sample plugins (Gutenberg, Create Block Theme) so you can try the Update translation action links.",
+		"categories": [
+			"Demo",
+			"Translation"
+		]
+	},
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "7.1"
+	},
+	"features": {
+		"networking": true
+	},
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "force-update-translations"
+			},
+			"options": {
+				"activate": true,
+				"targetFolderName": "force-update-translations"
+			},
+			"ifAlreadyInstalled": "overwrite",
+			"progress": {
+				"weight": 2,
+				"caption": "Installing Force Update Translations"
+			}
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "gutenberg"
+			},
+			"options": {
+				"activate": true
+			},
+			"ifAlreadyInstalled": "skip",
+			"progress": {
+				"weight": 1,
+				"caption": "Installing Gutenberg"
+			}
+		},
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "create-block-theme"
+			},
+			"options": {
+				"activate": true
+			},
+			"ifAlreadyInstalled": "skip",
+			"progress": {
+				"weight": 1,
+				"caption": "Installing Create Block Theme"
+			}
+		},
+		{
+			"step": "login"
+		}
+	]
+}
