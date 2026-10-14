@@ -15,10 +15,7 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
 	 * Constructor.
 	 */
 	public function __construct() {
-		// Add theme translation option if user Locale is not 'en_US'.
-		if ( get_user_locale() !== 'en_US' ) {
-			add_action( 'admin_menu', array( $this, 'admin_menu' ) );
-		}
+		add_action( 'admin_menu', array( $this, 'admin_menu' ) );
 	}
 
 
@@ -26,6 +23,13 @@ class Theme_Force_Update_Translations extends Force_Update_Translations {
 	 * Generate theme translation update option.
 	 */
 	public function admin_menu() {
+		// Add theme translation option if user Locale is not 'en_US'.
+		// Checked here, not in the constructor: when plugins load, the current user is not set yet,
+		// so get_user_locale() would return the site locale instead.
+		if ( get_user_locale() === 'en_US' ) {
+			return;
+		}
+
 		$theme_page = add_theme_page(
 			esc_html__( 'Update translation', 'force-update-translations' ),
 			esc_html__( 'Update translation', 'force-update-translations' ),
