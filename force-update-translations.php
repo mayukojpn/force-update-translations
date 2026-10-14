@@ -86,6 +86,11 @@ class Force_Update_Translations {
 					);
 				}
 			}
+
+			// WP_Textdomain_Registry caches the language directory listing for an hour (WP 6.5+).
+			// Clear it after every attempt: files may have been written before an error.
+			$subdir = ( 'theme' === $project['type'] ) ? 'themes' : 'plugins';
+			wp_cache_delete( md5( WP_LANG_DIR . '/' . $subdir . '/' ), 'translation_files' );
 		}
 
 		// Defer notices until admin_notices when that hook has not yet run
@@ -168,7 +173,10 @@ class Force_Update_Translations {
 
 			wp_mkdir_p( dirname( $translation_path ) );
 
-			file_put_contents( $translation_path, $response['body'] ); // phpcs:ignore
+			$written = $this->write_file( $translation_path, $response['body'] );
+			if ( is_wp_error( $written ) ) {
+				return $written;
+			}
 			return ( 'plugin' === $project['type'] ) ? basename( $project_path ) : '';
 		}
 
@@ -238,7 +246,10 @@ class Force_Update_Translations {
 			);
 		}
 
-		$this->delete_existing_json_files( $subdir, $slug, $locale );
+		$deleted = $this->delete_existing_json_files( $subdir, $slug, $locale );
+		if ( is_wp_error( $deleted ) ) {
+			return $deleted;
+		}
 
 		$json_result = $this->make_json_files( $po, dirname( $po ), $slug . '-' . $locale );
 		if ( is_wp_error( $json_result ) ) {
@@ -248,15 +259,18 @@ class Force_Update_Translations {
 		if ( class_exists( 'WP_Translation_File', false ) ) {
 			$php = is_readable( $mo ) ? WP_Translation_File::transform( $mo, 'php' ) : false;
 			if ( is_string( $php ) && '' !== $php ) {
-				file_put_contents( $base . '.l10n.php', $php ); // phpcs:ignore
+				$written = $this->write_file( $base . '.l10n.php', $php );
+				if ( is_wp_error( $written ) ) {
+					return $written;
+				}
 			} elseif ( file_exists( $base . '.l10n.php' ) ) {
 				// WP 6.5+ loads .l10n.php in preference to .mo; a stale one would shadow the fresh download.
-				unlink( $base . '.l10n.php' ); // phpcs:ignore
+				$deleted = $this->delete_file( $base . '.l10n.php' );
+				if ( is_wp_error( $deleted ) ) {
+					return $deleted;
+				}
 			}
 		}
-
-		// WP_Textdomain_Registry caches the language directory listing for an hour (WP 6.5+).
-		wp_cache_delete( md5( WP_LANG_DIR . '/' . $subdir . '/' ), 'translation_files' );
 
 		return true;
 	}
@@ -267,17 +281,62 @@ class Force_Update_Translations {
 	 * @param string $subdir plugins or themes.
 	 * @param string $slug   Text domain / slug.
 	 * @param string $locale Locale.
-	 * @return void
+	 * @return true|WP_Error
 	 */
 	protected function delete_existing_json_files( $subdir, $slug, $locale ) {
 		$pattern = WP_LANG_DIR . '/' . $subdir . '/' . $slug . '-' . $locale . '-*.json';
 		$files   = glob( $pattern );
 		if ( empty( $files ) ) {
-			return;
+			return true;
 		}
 		foreach ( $files as $file ) {
-			unlink( $file ); // phpcs:ignore
+			$deleted = $this->delete_file( $file );
+			if ( is_wp_error( $deleted ) ) {
+				return $deleted;
+			}
 		}
+		return true;
+	}
+
+	/**
+	 * Write a translation file.
+	 *
+	 * @param string $file     File path.
+	 * @param string $contents File contents.
+	 * @return true|WP_Error
+	 */
+	protected function write_file( $file, $contents ) {
+		if ( false === file_put_contents( $file, $contents ) ) { // phpcs:ignore
+			return new WP_Error(
+				'fdt-write-failed',
+				sprintf(
+					/* translators: %s: File path. */
+					__( 'Cannot write translation file: %s', 'force-update-translations' ),
+					'<b>' . esc_html( $file ) . '</b>'
+				)
+			);
+		}
+		return true;
+	}
+
+	/**
+	 * Delete a translation file.
+	 *
+	 * @param string $file File path.
+	 * @return true|WP_Error
+	 */
+	protected function delete_file( $file ) {
+		if ( ! unlink( $file ) ) { // phpcs:ignore
+			return new WP_Error(
+				'fdt-delete-failed',
+				sprintf(
+					/* translators: %s: File path. */
+					__( 'Cannot delete translation file: %s', 'force-update-translations' ),
+					'<b>' . esc_html( $file ) . '</b>'
+				)
+			);
+		}
+		return true;
 	}
 
 	/**
@@ -347,7 +406,10 @@ class Force_Update_Translations {
 			if ( false === $json ) {
 				continue;
 			}
-			file_put_contents( $file, $json ); // phpcs:ignore
+			$written = $this->write_file( $file, $json );
+			if ( is_wp_error( $written ) ) {
+				return $written;
+			}
 			++$created;
 		}
 
