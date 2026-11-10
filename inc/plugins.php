@@ -157,9 +157,15 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			return;
 		}
 
+		$slug_source = $plugin_file;
+
+		// Hello Dolly ships as a single file (hello.php); its WordPress.org slug is hello-dolly.
+		if ( 'hello.php' === $plugin_file ) {
+			$slug_source = 'hello-dolly/hello.php';
+		}
+
 		// Validate plugin file format and prevent directory traversal.
-		// The folder is optional: single-file plugins such as Hello Dolly (hello.php) have none.
-		if ( ! preg_match( '/^(?:([a-zA-Z0-9-_]+)\/)?([a-zA-Z0-9-_]+\.php)$/', $plugin_file, $plugin_slug ) ) {
+		if ( ! preg_match( '/^([a-zA-Z0-9-_]+)\/([a-zA-Z0-9-_]+\.php)$/', $slug_source, $plugin_slug ) ) {
 			$this->admin_notices['error'][] = array(
 				'status'  => 'error',
 				'content' => sprintf(
@@ -188,31 +194,6 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			return;
 		}
 
-		$slug = $plugin_slug[1];
-		if ( '' === $slug ) {
-			// A single-file plugin has no folder to use as its slug, so take its WordPress.org slug
-			// from the update data (e.g. hello-dolly for hello.php).
-			$plugin_state = get_site_transient( 'update_plugins' );
-			if ( isset( $plugin_state->response[ $plugin_file ]->slug ) ) {
-				$slug = (string) $plugin_state->response[ $plugin_file ]->slug;
-			} elseif ( isset( $plugin_state->no_update[ $plugin_file ]->slug ) ) {
-				$slug = (string) $plugin_state->no_update[ $plugin_file ]->slug;
-			}
-		}
-
-		if ( ! preg_match( '/^[a-zA-Z0-9-_]+$/', $slug ) ) {
-			$this->admin_notices['error'][] = array(
-				'status'  => 'error',
-				'content' => sprintf(
-					/* translators: %s: parameter */
-					esc_html__( 'Invalid parameter: %s', 'force-update-translations' ),
-					esc_html( $plugin_file )
-				),
-			);
-			add_action( 'admin_notices', array( $this, 'admin_notices' ) );
-			return;
-		}
-
 		$plugin_data = get_plugin_data( WP_PLUGIN_DIR . '/' . $plugin_file, false );
 
 		$projects = array(
@@ -220,7 +201,7 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 				'type'        => 'plugin',
 				'branch'      => $branch,
 				'sub_project' => array(
-					'slug' => $slug,
+					'slug' => $plugin_slug[1],
 					'name' => $plugin_data['Name'],
 				),
 			),
