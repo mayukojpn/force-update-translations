@@ -3,7 +3,7 @@
  * Plugin Name: Force Update Translations
  * Description: Apply WordPress.org theme and plugin translations to a site even if translations are not yet approved or language packs have not been released.
  * Author:      Mayo Moriyama & Contributors
- * Author URI:  https://github.com/mayukojpn/force-update-translations/graphs/contributors
+ * Author URI:  https://github.com/mayukojpn/force-update-translations/graphs/contributors?all=1
  * Version:     1.0.1
  * Requires at least: 5.0
  * Requires PHP: 5.6
