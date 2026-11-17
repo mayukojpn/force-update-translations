@@ -157,8 +157,15 @@ class Plugin_Force_Update_Translations extends Force_Update_Translations {
 			return;
 		}
 
+		$slug_source = $plugin_file;
+
+		// Hello Dolly ships as a single file (hello.php); its WordPress.org slug is hello-dolly.
+		if ( 'hello.php' === $plugin_file ) {
+			$slug_source = 'hello-dolly/hello.php';
+		}
+
 		// Validate plugin file format and prevent directory traversal.
-		if ( ! preg_match( '/^([a-zA-Z0-9-_]+)\/([a-zA-Z0-9-_]+\.php)$/', $plugin_file, $plugin_slug ) ) {
+		if ( ! preg_match( '/^([a-zA-Z0-9-_]+)\/([a-zA-Z0-9-_]+\.php)$/', $slug_source, $plugin_slug ) ) {
 			$this->admin_notices['error'][] = array(
 				'status'  => 'error',
 				'content' => sprintf(
