@@ -22,6 +22,12 @@ To download the translation files for a plugin:
 
 ## Changelog
 
+= 1.0.1 - 2026-11-17 =
+* Fix: "Update translation" now works for Hello Dolly, which ships as a single file (#54)
+* Fix: The theme "Update translation" screen follows the user's profile language instead of the site language (#56)
+* Fix: Show an error instead of the success notice when a translation file cannot be written (#52)
+* Credits: All three reported and fixed by @ekamran
+
 = 1.0.0 - 2026-10-07 =
 * Feature: Generate JSON files so JavaScript translations are applied (fixes #24)
 * Feature: Generate `.l10n.php` files on WordPress 6.5 and later (performant translations)
