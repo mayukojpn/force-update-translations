@@ -49,42 +49,55 @@ class Force_Update_Translations {
 			$locale = get_user_locale();
 			$used   = '';
 
-			foreach ( array( 'po', 'mo' ) as $format ) {
-				$file = $this->get_file( $project, $locale, $format );
-				if ( is_wp_error( $file ) ) {
-					$this->admin_notices[ $key ][] = array(
-						'status'  => 'error',
-						'content' => $file->get_error_message(),
-					);
-				} else {
-					$used = $file;
-				}
-			}
-
-			if ( empty( $this->admin_notices[ $key ] ) ) {
-				$derived = $this->generate_derived_translation_files( $project, $locale );
-				if ( is_wp_error( $derived ) ) {
-					$this->admin_notices[ $key ][] = array(
-						'status'  => 'error',
-						'content' => $derived->get_error_message(),
-					);
-				} else {
-					$name = '<b>' . esc_html( $project['sub_project']['name'] ) . '</b>';
-					if ( 'plugin' === $project['type'] ) {
-						// GlotPress project names are English-only, so deliberately not translated.
-						$name .= ' (' . ( 'stable' === $used ? 'Stable' : 'Development' ) . ')';
+			try {
+				foreach ( array( 'po', 'mo' ) as $format ) {
+					$file = $this->get_file( $project, $locale, $format );
+					if ( is_wp_error( $file ) ) {
+						$this->admin_notices[ $key ][] = array(
+							'status'  => 'error',
+							'content' => $file->get_error_message(),
+						);
+					} else {
+						$used = $file;
 					}
-					$content = sprintf(
-						/* translators: %s: Theme or plugin name, followed by the GlotPress project in parentheses (Stable or Development) for plugins. */
-						__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
-						$name
-					);
-
-					$this->admin_notices[ $key ][] = array(
-						'status'  => 'success',
-						'content' => $content,
-					);
 				}
+
+				if ( empty( $this->admin_notices[ $key ] ) ) {
+					$derived = $this->generate_derived_translation_files( $project, $locale );
+					if ( is_wp_error( $derived ) ) {
+						$this->admin_notices[ $key ][] = array(
+							'status'  => 'error',
+							'content' => $derived->get_error_message(),
+						);
+					} else {
+						$name = '<b>' . esc_html( $project['sub_project']['name'] ) . '</b>';
+						if ( 'plugin' === $project['type'] ) {
+							// GlotPress project names are English-only, so deliberately not translated.
+							$name .= ' (' . ( 'stable' === $used ? 'Stable' : 'Development' ) . ')';
+						}
+						$content = sprintf(
+							/* translators: %s: Theme or plugin name, followed by the GlotPress project in parentheses (Stable or Development) for plugins. */
+							__( 'Translation files have been downloaded: %s', 'force-update-translations' ),
+							$name
+						);
+
+						$this->admin_notices[ $key ][] = array(
+							'status'  => 'success',
+							'content' => $content,
+						);
+					}
+				}
+			} catch ( RuntimeException $e ) {
+				// A file could not be written or deleted; see write_file().
+				$this->admin_notices[ $key ][] = array(
+					'status'  => 'error',
+					'content' => $e->getMessage(),
+				);
+			} finally {
+				// WP_Textdomain_Registry caches the language directory listing for an hour (WP 6.5+).
+				// Some files may have been written even when an error occurred, so always clear it.
+				$subdir = ( 'theme' === $project['type'] ) ? 'themes' : 'plugins';
+				wp_cache_delete( md5( WP_LANG_DIR . '/' . $subdir . '/' ), 'translation_files' );
 			}
 		}
 
@@ -168,7 +181,7 @@ class Force_Update_Translations {
 
 			wp_mkdir_p( dirname( $translation_path ) );
 
-			file_put_contents( $translation_path, $response['body'] ); // phpcs:ignore
+			$this->write_file( $translation_path, $response['body'] );
 			return ( 'plugin' === $project['type'] ) ? basename( $project_path ) : '';
 		}
 
@@ -248,17 +261,43 @@ class Force_Update_Translations {
 		if ( class_exists( 'WP_Translation_File', false ) ) {
 			$php = is_readable( $mo ) ? WP_Translation_File::transform( $mo, 'php' ) : false;
 			if ( is_string( $php ) && '' !== $php ) {
-				file_put_contents( $base . '.l10n.php', $php ); // phpcs:ignore
-			} elseif ( file_exists( $base . '.l10n.php' ) ) {
+				$this->write_file( $base . '.l10n.php', $php );
+			} elseif ( file_exists( $base . '.l10n.php' ) && ! unlink( $base . '.l10n.php' ) ) { // phpcs:ignore
 				// WP 6.5+ loads .l10n.php in preference to .mo; a stale one would shadow the fresh download.
-				unlink( $base . '.l10n.php' ); // phpcs:ignore
+				throw new RuntimeException(
+					sprintf(
+						/* translators: %s: File path. */
+						__( 'Cannot delete translation file: %s', 'force-update-translations' ),
+						'<b>' . esc_html( $base . '.l10n.php' ) . '</b>'
+					)
+				);
 			}
 		}
 
-		// WP_Textdomain_Registry caches the language directory listing for an hour (WP 6.5+).
-		wp_cache_delete( md5( WP_LANG_DIR . '/' . $subdir . '/' ), 'translation_files' );
-
 		return true;
+	}
+
+	/**
+	 * Write a translation file.
+	 *
+	 * Throws instead of returning WP_Error so that every write site stays a one-liner;
+	 * get_files() turns the exception into an error notice.
+	 *
+	 * @param string $file     File path.
+	 * @param string $contents File contents.
+	 * @return void
+	 * @throws RuntimeException When the file cannot be written.
+	 */
+	protected function write_file( $file, $contents ) {
+		if ( false === file_put_contents( $file, $contents ) ) { // phpcs:ignore
+			throw new RuntimeException(
+				sprintf(
+					/* translators: %s: File path. */
+					__( 'Cannot write translation file: %s', 'force-update-translations' ),
+					'<b>' . esc_html( $file ) . '</b>'
+				)
+			);
+		}
 	}
 
 	/**
@@ -347,7 +386,7 @@ class Force_Update_Translations {
 			if ( false === $json ) {
 				continue;
 			}
-			file_put_contents( $file, $json ); // phpcs:ignore
+			$this->write_file( $file, $json );
 			++$created;
 		}
 
