@@ -1,0 +1,36 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"landingPage": "/wp-admin/plugins.php",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"features": {
+		"networking": true
+	},
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "wordpress.org/plugins",
+				"slug": "force-update-translations"
+			},
+			"options": {
+				"activate": true,
+				"targetFolderName": "force-update-translations"
+			},
+			"ifAlreadyInstalled": "overwrite",
+			"progress": {
+				"weight": 2,
+				"caption": "Installing Force Update Translations"
+			}
+		},
+		{
+			"step": "setSiteLanguage",
+			"language": "en_GB"
+		},
+		{
+			"step": "login"
+		}
+	]
+}
